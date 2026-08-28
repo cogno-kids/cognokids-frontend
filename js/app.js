@@ -128,6 +128,7 @@ Router.register('vacs', (app) => {
   renderVACS(app, {
     gameName: game.childName,
     gameEmoji: game.emoji,
+    gameWarna: game.warna,
     onDone: (answers, rts) => {
       Store.saveVacs(game.id, answers);
       rts.forEach((rtMs, i) => Store.addTrial(game.id, { kind: 'vacs', item: i + 1, rtMs }));
@@ -148,16 +149,18 @@ Router.register('selesai', (app) => renderSelesai(app, {
  * Lebih baik berhenti keras di sini daripada memulangkan sesi yang diam-diam cacat.
  */
 function renderEngineHilang(app, game) {
+  // Bilah pekat, bukan bilah langit: layar ini harus terbaca sebagai "ada yang tidak
+  // beres", bukan sebagai bagian dari permainan.
   app.innerHTML = `
-    <div class="topbar" style="background:var(--bad)">
-      <span style="font-size:22px" aria-hidden="true">⚠️</span>
+    <div class="topbar solid" style="background:var(--salah-tua)">
+      <div class="medali" aria-hidden="true">⚠️</div>
       <div style="flex:1"><h1>Aduh, ada yang rusak</h1></div>
     </div>
     <div class="screen">
       <div class="card center">
-        <div style="font-size:46px" aria-hidden="true">🛠️</div>
-        <h2 style="margin-top:8px">Permainannya tidak bisa dibuka</h2>
-        <p class="muted" style="margin-top:10px">
+        <div style="font-size:54px" aria-hidden="true">🛠️</div>
+        <h2 style="margin-top:10px">Permainannya tidak bisa dibuka</h2>
+        <p class="muted" style="margin-top:12px">
           Bukan salahmu, ya. Panggil Bapak/Ibu dulu.
         </p>
       </div>

@@ -13,7 +13,7 @@
 // test/offline.test.mjs sekarang menghitung sidik jari seluruh berkas SHELL dan gagal
 // bila isinya berubah tanpa versi ikut naik, jadi ini tidak bisa terlupa lagi.
 
-const CACHE = 'cognokids-v3.8.0';
+const CACHE = 'cognokids-v3.9.0';
 
 const SHELL = [
   './',
@@ -31,6 +31,8 @@ const SHELL = [
   './js/export.js',
   './js/archive.js',
   './js/pin.js',
+  './js/components/ui.js',
+  './js/components/maskot.js',
   './js/pages/login.js',
   './js/pages/vacs.js',
   './js/pages/intro.js',
@@ -41,6 +43,11 @@ const SHELL = [
   './js/games/move-match.js',
   './js/games/puzzle-emosi.js',
   './js/games/puzzle-logic.js',
+  // Font dibundel, bukan dari CDN. Kalau keduanya tidak ikut tersimpan, aplikasi
+  // tetap jalan luring tetapi rupanya berubah total begitu perangkat kehilangan
+  // sinyal — persis di sekolah, yang justru keadaan bakunya.
+  './assets/fonts/fredoka-latin.woff2',
+  './assets/fonts/nunito-latin.woff2',
   './assets/icon-192.png',
   './assets/icon-512.png',
 ];

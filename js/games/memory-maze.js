@@ -13,8 +13,9 @@
 // Cacat MM-4: v2.1 menampilkan 5 gambar di babak 2, sedangkan Tabel 3.6 menyatakan 4.
 // Jumlah di sini dibaca dari config.js, yang mengikuti naskah.
 
-import { shuffle, pickN, escapeHtml } from '../util.js';
+import { shuffle, pickN } from '../util.js';
 import { scoreMemoryRound } from '../metrics.js';
+import { bilah, layar } from '../components/ui.js';
 
 // ATURAN: hanya emoji Unicode 6.0 (2010) yang boleh dipakai sebagai stimulus MAUPUN
 // sebagai titik skala VACS. Pada Android lama, emoji versi lebih baru muncul sebagai
@@ -58,14 +59,14 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
     const c = cfg();
     app.innerHTML = shell(`
       <div class="card center">
-        <div style="font-size:52px" aria-hidden="true">${game.emoji}</div>
-        <h2 style="margin-top:8px">Babak ${ri + 1} dari ${game.rounds.length}</h2>
+        <div class="lencana-besar" aria-hidden="true">${game.emoji}</div>
+        <h2>Siap-siap ya!</h2>
         <p class="muted" style="margin-top:10px">
           Sebentar lagi muncul <b>${c.targets} gambar</b>.<br>
           Lihatnya cuma <b>${Math.round(c.showMs / 1000)} detik</b> ya!
         </p>
       </div>
-      <button class="btn btn-primary" id="mm-go">Aku siap! →</button>`);
+      <button class="btn btn-game dorong" id="mm-go">Aku siap! →</button>`);
     app.querySelector('#mm-go').addEventListener('click', screenShow);
   }
 
@@ -79,11 +80,11 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
       app.innerHTML = shell(`
         <div class="card center">
           <h3>Ingat gambar-gambar ini!</h3>
-          <div style="margin:6px auto 0;max-width:220px">
+          <div style="margin:10px auto 0;max-width:240px">
             <div class="progress" style="margin:0"><i id="mm-bar" style="width:100%"></i></div>
           </div>
-          <p class="muted" style="margin-top:8px;font-size:15px">
-            <b id="mm-sec" style="color:var(--indigo);font-size:20px">${left}</b> detik lagi
+          <p class="muted" style="margin-top:9px">
+            <b id="mm-sec" class="hitung">${left}</b> detik lagi
           </p>
         </div>
         <div class="emoji-grid" style="--cols:${Math.min(round.targets.length, 4)}">
@@ -115,8 +116,8 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
     app.innerHTML = shell(`
       <div class="card center">
         <h3>Pilih gambar yang tadi kamu ingat!</h3>
-        <p class="muted" style="margin-top:6px">
-          <span id="mm-count" style="color:var(--indigo);font-weight:700">Dipilih 0 dari ${c.targets} gambar</span>
+        <p style="margin-top:8px">
+          <span class="badge badge-game" id="mm-count">Dipilih 0 dari ${c.targets} gambar</span>
         </p>
       </div>
       <div class="emoji-grid" style="--cols:4" id="mm-opts" role="group" aria-label="Pilih gambar yang tadi kamu ingat">
@@ -124,7 +125,7 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
           <button type="button" class="emoji-card pick" data-i="${i}" aria-pressed="false"
                   >${e}</button>`).join('')}
       </div>
-      <button class="btn btn-primary" id="mm-done" disabled style="opacity:.5">Pilih ${c.targets} gambar dulu</button>`);
+      <button class="btn btn-game" id="mm-done" disabled>Pilih ${c.targets} gambar dulu</button>`);
 
     const doneBtn = app.querySelector('#mm-done');
     const countEl = app.querySelector('#mm-count');
@@ -142,7 +143,7 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
         // dan ia akan mengira aplikasinya rusak lalu menekan lebih keras. Batasnya harus
         // terlihat, bukan sekadar berlaku.
         countEl.textContent = `Sudah ${c.targets}. Mau ganti? Ketuk lagi gambarnya.`;
-        countEl.style.color = 'var(--warn)';
+        countEl.classList.add('badge-warn');
         btn.animate(
           [{ transform: 'translateX(0)' }, { transform: 'translateX(-5px)' },
            { transform: 'translateX(5px)' }, { transform: 'translateX(0)' }],
@@ -150,15 +151,17 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
         );
         return;
       }
-      countEl.style.color = 'var(--indigo)';
+      countEl.classList.remove('badge-warn');
 
       btn.setAttribute('aria-pressed', String(selected.has(i)));
       btn.classList.toggle('selected', selected.has(i));
       countEl.textContent = `Dipilih ${selected.size} dari ${c.targets} gambar`;
 
+      // Tombol yang mati harus MENERANGKAN dirinya sendiri: anak yang menekan tombol abu
+      // tanpa keterangan akan mengira aplikasinya rusak. Opasitas sebaris dibuang —
+      // sekarang keadaan matinya digambar CSS, rata dan kelabu tanpa bibir tombol.
       const ready = selected.size === c.targets;
       doneBtn.disabled = !ready;
-      doneBtn.style.opacity = ready ? '1' : '.5';
       doneBtn.textContent = ready ? 'Sudah, lanjut →' : `Pilih ${c.targets} gambar dulu`;
     });
 
@@ -187,8 +190,8 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
   function screenFeedback(scored) {
     const tset = new Set(round.targets);
     app.innerHTML = shell(`
-      <div class="card center">
-        <div style="font-size:44px" aria-hidden="true">${scored.falseAlarms === 0 ? '🎉' : '💪'}</div>
+      <div class="card center rayakan">
+        <div style="font-size:52px" aria-hidden="true">${scored.falseAlarms === 0 ? '🎉' : '💪'}</div>
         <h3 style="margin-top:6px">
           ${scored.falseAlarms === 0 ? 'Semuanya benar!' : `Kamu dapat ${scored.hits} dari ${scored.nSignal}`}
         </h3>
@@ -210,16 +213,15 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
     }, 2200);
   }
 
+  // Rangka bersama — dulu ditulis ulang di tiap berkas permainan, empat salinan
+  // hampir-sama yang harus diubah empat kali setiap rupanya berganti.
   function shell(inner) {
-    return `
-      <div class="topbar">
-        <span style="font-size:22px" aria-hidden="true">${game.emoji}</span>
-        <div style="flex:1">
-          <h1>${escapeHtml(game.childName)}</h1>
-          <div class="sub">Babak ${ri + 1} dari ${game.rounds.length}</div>
-        </div>
-      </div>
-      <div class="screen">${inner}</div>`;
+    return bilah({
+      emoji: game.emoji,
+      judul: game.childName,
+      sub: `Babak ${ri + 1} dari ${game.rounds.length}`,
+      warna: game.warna,
+    }) + layar(inner, { warna: game.warna });
   }
 
   screenReady();

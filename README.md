@@ -33,14 +33,16 @@ disinkronkan saat ada sinyal.
 
 ```bash
 python3 -m http.server 8080     # buka http://localhost:8080
-npm test                        # 117 uji
+npm test                        # 136 uji
 ```
 
 Tanpa build step, tanpa dependensi. Semua aset ada di repo ini.
 
 ## Menyiapkan perangkat lapangan
 
-Sekali per ponsel, lewat layar peneliti (ketuk bintang 5× di layar penutup):
+Sekali per ponsel, lewat layar peneliti (ketuk **nomor versi** 5× di layar penutup —
+sebelumnya bintang besar di tengah layar, yang justru benda paling menarik untuk
+diketuk berkali-kali oleh anak yang baru selesai bermain):
 
 1. **Ganti PIN** — repo ini publik, jadi PIN bawaan diketahui umum.
 2. **Isi URL backend dan token tulis**, lalu tekan Simpan & uji koneksi.

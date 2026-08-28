@@ -45,8 +45,8 @@ export function renderPeneliti(app, { onNewParticipant }) {
      </div>`;
 
   app.innerHTML = `
-    <div class="topbar" style="background:#1E1B4B">
-      <span style="font-size:20px" aria-hidden="true">🔬</span>
+    <div class="topbar solid">
+      <div class="medali" aria-hidden="true">🔬</div>
       <div style="flex:1"><h1>Mode Peneliti</h1><div class="sub">${escapeHtml(s.participant?.id ?? '')} · ${escapeHtml(s.participant?.nama ?? '')}</div></div>
     </div>
     <div class="screen">

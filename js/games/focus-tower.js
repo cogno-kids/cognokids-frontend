@@ -25,7 +25,8 @@
 //              memancarkan rtMs beserta penanda apakah distraktor sedang tampil, sehingga
 //              BIAYA DISTRAKSI (selisih RT sebelum vs sesudah) bisa dihitung — lihat metrics.js.
 
-import { escapeHtml, shuffle } from '../util.js';
+import { shuffle } from '../util.js';
+import { bilah, layar } from '../components/ui.js';
 
 // Tiap jenis membawa warna DAN bentuk. Bentuknya yang menanggung beban pembeda;
 // warna hanya bonus visual. Uji regresi ada di test/games.test.mjs.
@@ -82,29 +83,29 @@ export function mountFocusTower(app, { game, onTrial, onFinish }) {
 
   const distraktorTampil = () => score >= game.distractorFromScore;
 
-  function layar() {
+  // Namanya `gambar`, bukan `layar`: `layar` sekarang milik rangka bersama di
+  // components/ui.js, dan dua nama yang sama di satu berkas adalah cacat menunggu giliran.
+  function gambar() {
     const wadah = shuffle(JENIS);   // posisi wadah diacak tiap balok — cegah hafalan motorik
     const fall = fallMsFor(score);
+    const gaya = `--g:${game.warna.g};--g-tua:${game.warna.tua};--g-terang:${game.warna.terang}`;
 
-    app.innerHTML = `
-      <div class="topbar">
-        <span style="font-size:22px" aria-hidden="true">${game.emoji}</span>
-        <div style="flex:1">
-          <h1>${escapeHtml(game.childName)}</h1>
-          <div class="sub">Benar ${score} dari ${target}</div>
-        </div>
-      </div>
-      <div class="progress"><i style="width:${(score / target) * 100}%"></i></div>
-
-      <div class="screen ft-screen">
+    app.innerHTML = bilah({
+      emoji: game.emoji,
+      judul: game.childName,
+      sub: `Benar ${score} dari ${target}`,
+      warna: game.warna,
+    }) +
+      `<div class="progress" style="${gaya}"><i style="width:${(score / target) * 100}%"></i></div>` +
+      layar(`
         <div class="card center ft-instruksi">
           <h3>Ketuk bentuk yang <b>SAMA</b> dengan balok!</h3>
-          <p class="muted" style="margin-top:4px;font-size:13.5px">Cepat ya, baloknya turun terus 👇</p>
+          <p class="muted" style="margin-top:5px">Cepat ya, baloknya turun terus 👇</p>
         </div>
 
         <div class="ft-arena">
           <div class="ft-balok" style="--fall:${fall}ms" id="ft-balok">
-            ${svgBentuk(jenisSekarang, JENIS.find((j) => j.id === jenisSekarang).warna, 54)}
+            ${svgBentuk(jenisSekarang, JENIS.find((j) => j.id === jenisSekarang).warna, 66)}
           </div>
         </div>
 
@@ -117,10 +118,10 @@ export function mountFocusTower(app, { game, onTrial, onFinish }) {
         <div class="ft-wadah-baris" id="ft-wadah" role="group" aria-label="Pilih bentuk yang sama dengan balok">
           ${wadah.map((j) => `
             <button type="button" class="ft-wadah" data-id="${j.id}" aria-label="Bentuk ${j.nama}">
-              ${svgBentuk(j.id, j.warna, 40, { diberiLabel: false })}
+              ${svgBentuk(j.id, j.warna, 44, { diberiLabel: false })}
             </button>`).join('')}
-        </div>
-      </div>`;
+        </div>`,
+        { warna: game.warna, kelas: 'ft-screen' });
 
     app.querySelector('#ft-wadah').addEventListener('click', (ev) => {
       const btn = ev.target.closest('button[data-id]');
@@ -143,7 +144,7 @@ export function mountFocusTower(app, { game, onTrial, onFinish }) {
     answered = false;
     distraktorAktif = false;
     blockAt = Date.now();
-    layar();
+    gambar();
 
     clearTimeout(missTimer);
     missTimer = setTimeout(() => jawab(null, true), fallMsFor(score));
@@ -176,7 +177,7 @@ export function mountFocusTower(app, { game, onTrial, onFinish }) {
   function umpanBalik(benar, miss) {
     const el = document.createElement('div');
     el.className = `ft-fb ${benar ? 'ok' : 'no'}`;
-    el.textContent = benar ? '✅ Tepat!' : miss ? '⏱️ Terlambat!' : '❌ Bukan itu';
+    el.textContent = benar ? 'Tepat!' : miss ? 'Terlambat!' : 'Bukan itu';
     app.querySelector('.ft-screen')?.appendChild(el);
 
     setTimeout(() => (score >= target ? selesai() : nextBlock()), 620);

@@ -1,247 +1,622 @@
-/* styles.css — palet dan rasa visual dipertahankan dari v2.1 (pipeline §10);
-   yang berubah strukturnya, bukan wajahnya.
-   Font memakai stack sistem: nol unduhan, nol dependensi CDN, selalu tersedia offline. */
+/* styles.css — v3.9. Ditulis ulang dari token, bukan ditambal.
+ *
+ * APA YANG SALAH DENGAN TAMPILAN SEBELUMNYA
+ *
+ * Palet v2.1 (diwarisi utuh oleh v3.0–v3.8) adalah indigo #4F46E5 di atas #F0F4FF, kartu
+ * putih bersudut membulat, garis abu #E5E7EB, bayangan tipis. Itu persis konfigurasi
+ * bawaan Tailwind, dan itu bahasa rupa DASBOR ADMINISTRASI — bukan bahasa rupa permainan
+ * anak. Ditambah satu cetakan yang sama untuk semua layar (bilah indigo pekat → kartu
+ * putih → kartu putih → tombol selebar layar), hasilnya: sebuah FORMULIR yang kebetulan
+ * berisi permainan. Anak kelas 3 tidak mengenalinya sebagai tempat bermain.
+ *
+ * Tiga cacat yang lebih dari sekadar selera:
+ *   1. HIRARKINYA TERBALIK. Instruksi ditulis dengan .muted 15px berwarna abu #6B7280,
+ *      yaitu gaya yang artinya "keterangan tambahan". Bagi anak, kalimat itulah isi
+ *      layarnya. Aplikasi ini selama ini membisikkan perintahnya.
+ *   2. LABEL SKALA VACS 11px ABU. Label itu yang memberi makna pada emoji; ia justru
+ *      teks terkecil dan terpucat di seluruh aplikasi. Itu persoalan keabsahan alat ukur,
+ *      bukan estetika.
+ *   3. IDENTITASNYA DISERAHKAN KE VENDOR. Satu-satunya "gambar" adalah emoji, yang
+ *      bentuknya berbeda di tiap merek ponsel. Aplikasinya tidak punya wajah sendiri.
+ *
+ * KEPUTUSAN v3.9
+ *   • Latar langit bergradien menggantikan bidang abu rata; bilah atas tidak lagi
+ *     sebuah palang pekat, melainkan bagian dari pemandangan.
+ *   • Tiap permainan memegang warnanya sendiri (config.js → GAMES[].warna), sehingga
+ *     "pindah permainan" TERLIHAT, tidak hanya tertulis.
+ *   • Tombol dan panel diberi bibir bawah pekat — bukan bayangan kabur — sehingga
+ *     tampak bisa ditekan. Ini idiom baku antarmuka anak.
+ *   • Dua font membulat dibundel (lihat assets/fonts/SUMBER.md).
+ *   • Semua pasangan warna teks/latar di bawah SUDAH DIHITUNG ≥ 4.5:1 (WCAG AA teks
+ *     biasa), termasuk yang di atas warna permainan. Angkanya ditulis di komentar
+ *     masing-masing dan dijaga test/tampilan.test.mjs.
+ */
+
+/* ── Font ────────────────────────────────────────────────────────────────────
+   Dibundel, bukan dari CDN: aplikasi harus termuat utuh di sekolah tanpa sinyal,
+   dan test/offline.test.mjs menolak sumber eksternal apa pun. */
+@font-face {
+  font-family: 'Fredoka';
+  src: url('../fonts/fredoka-latin.woff2') format('woff2');
+  font-weight: 400 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Nunito';
+  src: url('../fonts/nunito-latin.woff2') format('woff2');
+  font-weight: 400 800; font-style: normal; font-display: swap;
+}
 
 :root {
-  --indigo: #4F46E5; --indigo-soft: #EEF2FF; --indigo-line: #E0E7FF;
-  --ink: #1E1B4B; --ink-2: #374151; --ink-3: #6B7280;
-  --bg: #F0F4FF; --card: #fff; --line: #E5E7EB;
-  --ok: #10B981; --warn: #F59E0B; --bad: #EF4444; --info: #3B82F6;
-  --r-lg: 20px; --r-md: 14px;
+  /* Emoji sengaja diletakkan di ekor: kedua font di atas tidak punya glif emoji,
+     jadi sistemlah yang melayaninya. Menyebutnya eksplisit mencegah peramban
+     memilih font emoji hitam-putih. */
+  --judul: 'Fredoka', 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif,
+           'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji';
+  --teks:  'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif,
+           'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji';
+
+  /* ── Tinta ── kontras terhadap kertas putih ditulis di tiap baris ── */
+  --tinta:   #223052;   /* 13.02:1 — teks utama                        */
+  --tinta-2: #405274;   /*  7.84:1 — teks bacaan                       */
+  --tinta-3: #5F7191;   /*  4.93:1 — LULUS AA teks biasa.              */
+  /* Catatan: --tinta-3 lama (#6B7280) hanya 4.22:1, tidak lulus untuk teks biasa.
+     Sekarang lulus, sehingga keterangan kecil untuk pendamping pun tetap terbaca. */
+
+  --kertas:   #FFFFFF;
+  --kertas-2: #F6FAFF;
+  --garis:    #DFE7F5;
+
+  /* ── Warna pokok ── */
+  --utama:     #3B67F0;   /* putih di atasnya 4.79:1 */
+  --utama-tua: #2A4CB8;   /* bibir tombol; putih 7.44:1 */
+  --utama-mud: #E9EFFF;
+
+  /* ── Semantik. Pasangan pucat/pekat, bukan putih di atas warna terang ── */
+  --benar:     #11865A;   /* putih 4.58:1 */
+  --benar-tua: #0B6A47;   /* di atas --benar-mud 5.86:1 */
+  --benar-mud: #DCF7EC;
+  --salah:     #D73A4D;   /* putih 4.56:1 */
+  --salah-tua: #A82536;   /* di atas --salah-mud 5.87:1 */
+  --salah-mud: #FFE4E7;
+  --awas:      #F5A623;   /* teks GELAP di atasnya, bukan putih: putih hanya 2.4:1 */
+  --awas-teks: #4A3000;   /* di atas --awas 6.05:1 */
+  --awas-tua:  #8A5200;   /* di atas --awas-mud 5.68:1 */
+  --awas-mud:  #FFF0D6;
+
+  /* ── Warna permainan (dipasang per layar lewat --g / --g-tua / --g-terang) ──
+     Bawaannya warna pokok, supaya layar tanpa permainan tetap utuh. */
+  --g:        var(--utama);
+  --g-tua:    var(--utama-tua);
+  --g-terang: var(--utama-mud);
+  --g-teks:   #FFFFFF;    /* warna teks DI ATAS --g; jingga menggantinya jadi coklat */
+
+  --r-xl: 28px; --r-lg: 22px; --r-md: 16px; --r-sm: 11px;
+
+  /* Bayangan "stiker": bibir pekat + satu bayangan lembut. Bukan blur tipis abu,
+     yang di layar ponsel murah nyaris tak terlihat sehingga kartunya tampak rata. */
+  --angkat: 0 4px 0 rgba(34, 48, 82, .10), 0 10px 22px -8px rgba(34, 48, 82, .30);
+
+  /* ── Alias nama lama ──────────────────────────────────────────────────────
+     Layar peneliti (238 baris tabel dan formulir) masih memakai nama token v2.1.
+     Memetakannya di sini membuat rombakan ini bisa dikerjakan tanpa satu tahap
+     pun yang setengah jadi — dan tanpa mendesain ulang layar yang memang sudah
+     bekerja untuk pembacanya. */
+  --ink: var(--tinta); --ink-2: var(--tinta-2); --ink-3: var(--tinta-3);
+  --line: var(--garis); --card: var(--kertas); --bg: var(--kertas-2);
+  --indigo: var(--utama); --indigo-soft: var(--utama-mud); --indigo-line: #C9D8FF;
+  --ok: var(--benar); --warn: var(--awas); --bad: var(--salah); --info: var(--utama);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-html, body {
-  height: 100%;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  background: var(--bg);
-  color: var(--ink-2);
-  /* Ukuran dasar 17px — anak SD, dan sebagian membaca di ponsel murah. */
-  font-size: 17px;
-  line-height: 1.5;
+html { height: 100%; background: #EDF3FF; }
+body {
+  min-height: 100%; background: transparent;
+  font-family: var(--teks);
+  /* 18px, naik dari 17px. Pembaca pemula, dan sebagian di ponsel murah berlayar kecil. */
+  font-size: 18px; line-height: 1.5;
+  color: var(--tinta-2);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Langit. Lapisan tetap di belakang segalanya — bukan background-attachment: fixed,
+   yang membuat sebagian Safari iOS menggambar ulang seluruh layar tiap gulir. */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(78% 52% at 12% 2%,  rgba(255,255,255,.95) 0%, rgba(255,255,255,0) 58%),
+    radial-gradient(72% 48% at 98% 6%,  rgba(214,225,255,.85) 0%, rgba(214,225,255,0) 62%),
+    linear-gradient(180deg, #DEEEFF 0%, #EDF3FF 46%, #FFF1DC 100%);
 }
 
 #app { min-height: 100%; display: flex; flex-direction: column; }
 
-.screen { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 16px; animation: fade .25s ease; }
-@keyframes fade { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
+.screen {
+  flex: 1; display: flex; flex-direction: column; gap: 14px;
+  padding: 6px 16px calc(20px + env(safe-area-inset-bottom));
+  animation: masuk .28s cubic-bezier(.2, .8, .3, 1);
+}
+@keyframes masuk { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
 
-.topbar { background: var(--indigo); color: #fff; padding: 12px 16px; display: flex; align-items: center; gap: 10px; }
-.topbar h1 { font-size: 17px; font-weight: 700; flex: 1; }
-.topbar .sub { font-size: 12px; opacity: .85; }
+/* ── Tipografi ───────────────────────────────────────────────────────────────
+   Ukuran dinaikkan menyeluruh, dan .muted TIDAK LAGI abu pucat. Di aplikasi ini
+   "keterangan" justru instruksi utamanya. */
+h1, h2, h3 { font-family: var(--judul); font-weight: 600; color: var(--tinta); line-height: 1.25; }
+h2 { font-size: 27px; }
+h3 { font-size: 21px; }
+b, strong { font-weight: 800; color: var(--tinta); }
 
-.progress { height: 8px; background: var(--indigo-line); border-radius: 8px; overflow: hidden; margin: 0 16px; }
-.progress > i { display: block; height: 100%; background: linear-gradient(90deg, #6366F1, #8B5CF6); transition: width .4s ease; }
-
-.card { background: var(--card); border-radius: var(--r-lg); padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.07); }
+.muted { color: var(--tinta-2); font-size: 16.5px; }
+/* .kecil HANYA untuk teks yang dibaca pendamping, bukan anak. */
+.kecil { color: var(--tinta-3); font-size: 14px; }
 .center { text-align: center; }
-.muted { color: var(--ink-3); font-size: 15px; }
 
-h2 { font-size: 23px; font-weight: 700; color: var(--ink); }
-h3 { font-size: 17px; font-weight: 700; color: var(--ink-2); }
-
-label { display: block; font-size: 14px; font-weight: 600; color: var(--ink-2); margin-bottom: 6px; }
-input, select {
-  width: 100%; padding: 14px 16px; font-size: 17px; font-family: inherit;
-  border: 2px solid var(--line); border-radius: var(--r-md); background: #fff; outline: none;
+/* ── Bilah atas ──────────────────────────────────────────────────────────────
+   Dulu palang indigo pekat selebar layar di setiap layar tanpa kecuali. Sekarang
+   ia bagian dari langit: yang menonjol medali permainannya, bukan palangnya. */
+.topbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: calc(12px + env(safe-area-inset-top)) 16px 8px;
+  background: transparent; color: var(--tinta);
 }
-input:focus, select:focus { border-color: var(--indigo); }
-input[aria-invalid="true"] { border-color: var(--bad); background: #FEF2F2; }
+.topbar h1 { font-size: 22px; flex: 1; }
+.topbar .sub { font-family: var(--teks); font-size: 14px; font-weight: 700; color: var(--tinta-3); margin-top: 1px; }
 
-.field { margin-bottom: 14px; }
-.field .err { color: var(--bad); font-size: 13.5px; font-weight: 600; margin-top: 5px; min-height: 1em; }
+/* Varian pekat — dipakai layar peneliti dan layar galat, yang memang harus
+   terbaca sebagai "bukan layar anak". */
+.topbar.solid { background: var(--tinta); color: #fff; padding-bottom: 12px; }
+.topbar.solid h1 { color: #fff; }
+.topbar.solid .sub { color: rgba(255, 255, 255, .8); }
 
+.medali {
+  flex: none; display: grid; place-items: center;
+  width: 50px; height: 50px; border-radius: var(--r-md);
+  background: var(--kertas); font-size: 27px; line-height: 1;
+  box-shadow: 0 3px 0 rgba(34, 48, 82, .10), inset 0 0 0 2.5px var(--g-terang);
+}
+
+/* ── Jejak bintang ───────────────────────────────────────────────────────────
+   Kemajuan sesi sebagai GAMBAR, bukan tulisan "Permainan 2 dari 4" 12px beropasitas
+   85% di pojok. Bintangnya SVG, bukan emoji ⭐ — bentuk emoji berbeda-beda antar merek
+   ponsel, dan penanda kemajuan tidak boleh ikut berbeda.
+
+   Bintang diberikan untuk MENYELESAIKAN permainan, bukan untuk bermain bagus. Sepanjang
+   sesi anak dijanjikan "tidak ada yang dinilai"; hadiah yang bergantung pada mutu
+   permainan akan mengingkari janji itu, dan justru mencemari EK1 yang sedang diukur. */
+.jejak { display: flex; gap: 5px; align-items: center; flex: none; }
+.jejak svg { display: block; width: 21px; height: 21px; }
+.jejak .kosong { fill: rgba(34, 48, 82, .26); }
+.jejak .penuh  { fill: var(--awas); }
+.jejak .baru   { animation: bintang-muncul .5s cubic-bezier(.2, 1.4, .4, 1) both; }
+@keyframes bintang-muncul {
+  from { transform: scale(0) rotate(-40deg); opacity: 0 }
+  to   { transform: none; opacity: 1 }
+}
+
+/* ── Panel ───────────────────────────────────────────────────────────────────
+   Nama kelasnya tetap .card supaya seluruh markup lama tetap benar. */
+.card {
+  background: var(--kertas); border-radius: var(--r-xl);
+  padding: 20px; box-shadow: var(--angkat);
+}
+.card + .card { margin-top: 0; }
+/* Pita warna permainan di tepi atas — penanda "kamu sedang di permainan ini". */
+.card.bertanda { border-top: 5px solid var(--g); padding-top: 17px; }
+
+/* ── Tombol ──────────────────────────────────────────────────────────────────
+   Bibir pekat di bawah + gerak turun saat ditekan. Anak tahu benda ini bisa ditekan
+   sebelum membaca satu kata pun. Persegi panjang rata sebelumnya tidak memberi tanda
+   apa-apa selain warna. */
 .btn {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  width: 100%; padding: 16px 20px; font-size: 17px; font-weight: 700; font-family: inherit;
-  border: none; border-radius: 18px; cursor: pointer; transition: transform .1s;
+  --bibir: var(--utama-tua);
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  width: 100%; min-height: 62px; padding: 15px 22px;
+  font-family: var(--judul); font-size: 20px; font-weight: 600;
+  color: #fff; background: var(--utama);
+  border: none; border-radius: var(--r-lg); cursor: pointer;
+  box-shadow: 0 5px 0 var(--bibir), 0 10px 18px -8px rgba(34, 48, 82, .5);
+  transition: transform .08s ease, box-shadow .08s ease, filter .12s;
 }
-.btn:active { transform: scale(.97); }
-.btn-primary { background: var(--indigo); color: #fff; box-shadow: 0 4px 14px rgba(79,70,229,.35); }
-.btn-ghost { background: var(--line); color: var(--ink-2); }
+.btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--bibir); }
+.btn-primary { background: var(--utama); --bibir: var(--utama-tua); }
+/* Tombol berwarna permainan — dipakai layar intro. */
+.btn-game { background: var(--g); color: var(--g-teks); --bibir: var(--g-tua); }
+.btn-ghost {
+  background: var(--kertas); color: var(--tinta-2); --bibir: var(--garis);
+  font-size: 18px; min-height: 54px;
+}
+/* Mati: RATA dan kelabu, tanpa bibir. Bedanya harus terlihat, karena teks tombolnya
+   sendirilah yang menerangkan syaratnya ("Pilih 3 gambar dulu"). */
+.btn[disabled] {
+  background: #C9D3E6; color: #56637C; box-shadow: none;
+  cursor: default; transform: none;
+}
+.btn[disabled]:active { transform: none; }
 
-/* Pilihan kartu (jenis kelamin, kondisi). Grid dengan tinggi seragam —
-   cacat 7.7 v2.1: "Perempuan" terlipat dua baris sehingga kartunya beda tinggi. */
-.choice { display: grid; gap: 10px; }
+/* ── Isian ───────────────────────────────────────────────────────────────────
+   Layar login sebagian besar diisi PENDAMPING; ia tetap formulir, dan tak apa-apa. */
+label { display: block; font-size: 15px; font-weight: 700; color: var(--tinta-2); margin-bottom: 6px; }
+input, select {
+  width: 100%; padding: 15px 16px; font-size: 18px; font-family: var(--teks); font-weight: 600;
+  color: var(--tinta); background: var(--kertas-2);
+  border: 2.5px solid var(--garis); border-radius: var(--r-md); outline: none;
+  transition: border-color .12s, background .12s;
+}
+input::placeholder { color: var(--tinta-3); font-weight: 500; }
+input:focus, select:focus { border-color: var(--utama); background: var(--kertas); }
+input[aria-invalid="true"] { border-color: var(--salah); background: var(--salah-mud); }
+.field { margin-bottom: 16px; }
+.field .err { color: var(--salah-tua); font-size: 14.5px; font-weight: 700; margin-top: 6px; min-height: 1em; }
+
+/* ── Pilihan kartu ───────────────────────────────────────────────────────────
+   Grid bertinggi seragam — cacat §7.7 v2.1: "Perempuan" terlipat dua baris sehingga
+   kedua kartunya beda tinggi. */
+.choice { display: grid; gap: 11px; }
 .choice.cols-2 { grid-template-columns: 1fr 1fr; }
 .choice.cols-3 { grid-template-columns: repeat(3, 1fr); }
 .choice button {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-  min-height: 84px; padding: 12px 8px; font-family: inherit; font-size: 15px; font-weight: 600;
-  border: 2px solid var(--line); border-radius: var(--r-md); background: #fff; color: var(--ink-2);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  min-height: 92px; padding: 12px 8px;
+  font-family: var(--teks); font-size: 16px; font-weight: 700; color: var(--tinta-2);
+  background: var(--kertas); border: 2.5px solid var(--garis); border-radius: var(--r-lg);
   cursor: pointer; text-align: center; line-height: 1.25;
+  box-shadow: 0 3px 0 rgba(34, 48, 82, .07);
+  transition: transform .1s, border-color .12s, background .12s;
 }
-.choice button .big { font-size: 26px; }
-.choice button .hint { font-size: 12px; font-weight: 500; color: var(--ink-3); }
-.choice button[aria-pressed="true"] { border-color: var(--indigo); background: var(--indigo-soft); color: var(--indigo); }
+.choice button:active { transform: translateY(2px); box-shadow: none; }
+.choice button .big { font-size: 30px; }
+.choice button .hint { font-size: 13px; font-weight: 600; color: var(--tinta-3); }
+.choice button[aria-pressed="true"] {
+  border-color: var(--utama); background: var(--utama-mud); color: var(--utama-tua);
+  box-shadow: 0 3px 0 var(--utama-tua);
+}
+.choice button[aria-pressed="true"] .hint { color: var(--utama-tua); }
 
-.badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
-.badge-blue { background: var(--indigo-soft); color: var(--indigo); }
-.badge-warn { background: #FEF3C7; color: #B45309; }
+/* ── Bagian yang dipakai layar tertentu ─────────────────────────────────── */
 
-/* Cacat 7.5: v2.1 tak punya satu pun fokus terlihat. */
-:focus-visible { outline: 3px solid var(--indigo); outline-offset: 2px; }
+/* Lencana besar di layar pembuka — emoji permainan di dalam cakram warnanya sendiri.
+   Sebelumnya emoji 64px melayang di atas kartu putih, tanpa bentuk apa pun di belakangnya. */
+.lencana-besar {
+  width: 108px; height: 108px; margin: 2px auto 14px;
+  display: grid; place-items: center; border-radius: 50%;
+  background: var(--g-terang); font-size: 58px; line-height: 1;
+  box-shadow: 0 6px 0 var(--g-tua), inset 0 -5px 14px rgba(255, 255, 255, .55);
+}
+.intro-teks { font-family: var(--judul); font-size: 22px; font-weight: 600; color: var(--tinta); line-height: 1.35; }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+/* Judul panel — memisahkan bagian anak dari bagian pendamping di layar login.
+   Sebelumnya keduanya berderet dalam satu kartu, dan bagian milik anak (nama panggilan,
+   laki-laki/perempuan) terselip di antara nomor peserta dan nama sekolah. */
+.panel-judul {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--judul); font-size: 18px; font-weight: 600; color: var(--tinta);
+  padding-bottom: 12px; margin-bottom: 16px; border-bottom: 2px solid var(--garis);
+}
+.panel-pendamping { background: var(--kertas-2); }
+.panel-pendamping .panel-judul { color: var(--tinta-3); }
+/* <span class="label"> dipakai untuk kelompok tombol, yang tidak bisa memakai <label>
+   karena tidak menunjuk satu kolom isian pun. */
+.label { display: block; font-size: 15px; font-weight: 700; color: var(--tinta-2); margin-bottom: 8px; }
+
+/* Kartu pertanyaan kuesioner. */
+.tanya h2 { margin-top: 8px; line-height: 1.3; }
+.tanya .muted { margin-top: 12px; font-size: 16px; }
+
+/* Hitung mundur fase mengingat. */
+.hitung { font-family: var(--judul); font-size: 26px; font-weight: 600; color: var(--g-tua); }
+
+/* Empat bintang di layar penutup. */
+.jejak-besar { display: flex; justify-content: center; margin-bottom: 14px; }
+.jejak-besar .jejak { gap: 9px; }
+.jejak-besar .jejak svg { width: 42px; height: 42px; }
+
+/* ── Badge ───────────────────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 15px; border-radius: 999px;
+  font-family: var(--judul); font-size: 16px; font-weight: 600;
+}
+.badge-blue { background: var(--utama-mud); color: var(--utama-tua); }
+.badge-warn { background: var(--awas-mud); color: var(--awas-tua); }
+.badge-game { background: var(--g-terang); color: var(--g-tua); }
+
+/* ── Bilah kemajuan dalam-permainan ─────────────────────────────────────── */
+.progress { height: 12px; background: rgba(34, 48, 82, .10); border-radius: 999px; overflow: hidden; margin: 0 16px; }
+.progress > i { display: block; height: 100%; border-radius: 999px; background: var(--g); transition: width .4s ease; }
+
+/* Mendorong tombol tindakan ke dasar layar. Dipakai di layar yang isinya sedikit: tanpa
+   ini tombolnya menggantung di tengah, jauh dari ibu jari, dengan separuh layar kosong
+   di bawahnya. */
+.dorong { margin-top: auto; }
+
+:focus-visible { outline: 3px solid var(--utama); outline-offset: 3px; border-radius: 6px; }
+
+/* ── Maskot ──────────────────────────────────────────────────────────────────
+   Aplikasi ini sebelumnya menyapa anak sebagai "kami" tanpa ada siapa pun di layar.
+   Puti si burung hantu memberi wajah pada "kami" itu.
+
+   ATURAN KEABSAHAN, dijaga test/tampilan.test.mjs:
+     • Puti TIDAK PERNAH muncul di layar yang memuat skala VACS — termasuk layar
+       latihan. Ekspresi wajah di sebelah pertanyaan adalah petunjuk jawaban.
+     • Wajahnya TIDAK PERNAH berubah. Yang berubah hanya sayapnya. Maskot yang ikut
+       sedih atau gembira menilai anak, dan sepanjang sesi kami berjanji tidak menilai.
+     • Ia tidak pernah muncul selama permainan berlangsung — di Cocokkan Bentuk itu
+       akan menjadi distraktor tambahan yang tidak dirancang. */
+.maskot { display: block; flex: none; }
+.maskot .sayap-lambai {
+  /* transform-box wajib: tanpa itu transform-origin di dalam SVG dihitung dari kotak
+     batas elemen, bukan dari viewBox, dan sayapnya berputar dari titik yang salah. */
+  transform-box: view-box; transform-origin: 88px 70px;
+  animation: lambai 2.6s ease-in-out infinite;
+}
+@keyframes lambai { 0%, 62%, 100% { transform: rotate(0) } 72% { transform: rotate(-17deg) } 86% { transform: rotate(6deg) } }
+
+.sapa { display: flex; align-items: flex-end; gap: 12px; }
+.gelembung {
+  position: relative; flex: 1;
+  background: var(--kertas); border-radius: var(--r-lg) var(--r-lg) var(--r-lg) 6px;
+  padding: 15px 17px; box-shadow: var(--angkat);
+  font-size: 17.5px; color: var(--tinta-2);
+}
+.gelembung::after {
+  content: ''; position: absolute; left: -8px; bottom: 12px;
+  border: 8px solid transparent; border-right-color: var(--kertas); border-left: 0;
+}
+/* Bersusun ke bawah. Dipakai bila Puti digambar besar: berdampingan, ia menyisakan
+   kurang dari 240px untuk gelembungnya, dan kalimatnya pecah menjadi enam baris pendek
+   yang justru lebih berat dibaca daripada tiga baris panjang. */
+.sapa.tegak { flex-direction: column; align-items: center; gap: 0; }
+.sapa.tegak .gelembung { border-radius: var(--r-lg); text-align: center; width: 100%; }
+.sapa.tegak .gelembung::after {
+  left: 50%; top: -8px; bottom: auto; transform: translateX(-50%);
+  border: 8px solid transparent; border-bottom-color: var(--kertas); border-top: 0; border-right-color: transparent;
 }
 
-/* ── VACS ──────────────────────────────────────────────────────────────────
-   Target sentuh ≥64px: cacat 7.5 v2.1 memakai ±48px, terlalu kecil untuk jari anak SD
-   dan menyebabkan salah tekan. */
-.vacs-opts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+/* ── VACS ────────────────────────────────────────────────────────────────────
+   Sasaran sentuh ≥64px (cacat §7.5 v2.1 memakai ±48px).
+
+   Perubahan penting v3.9 ADA PADA LABELNYA, dan itu bukan urusan selera: label
+   "Tidak · Sedikit · Lumayan · Banyak · Banyak sekali" adalah satu-satunya hal yang
+   memberi MAKNA pada kelima emoji. Sebelumnya ia 11px berwarna abu #6B7280 — teks
+   terkecil sekaligus terpucat di seluruh aplikasi. Anak yang tidak membacanya menebak
+   dari wajah emoji saja, dan jawabannya jadi mengukur tafsir emoji, bukan pengalamannya.
+   Sekarang 13.5px, tebal, --tinta-2 (7.84:1). */
+.vacs-opts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
 .vacs-opt {
-  display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 6px;
-  min-height: 104px; padding: 12px 4px; font-family: inherit;
-  background: #fff; border: 2px solid var(--line); border-radius: var(--r-md);
-  cursor: pointer; transition: transform .12s, border-color .12s, background .12s;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 7px;
+  min-height: 116px; padding: 13px 3px;
+  font-family: var(--teks);
+  background: var(--kertas); border: 2.5px solid var(--garis); border-radius: var(--r-lg);
+  cursor: pointer; box-shadow: 0 3px 0 rgba(34, 48, 82, .07);
+  transition: transform .12s, border-color .12s, background .12s, box-shadow .12s;
 }
-.vacs-opt:active { transform: scale(.94); }
-.vacs-emoji { font-size: 34px; line-height: 1; min-height: 40px; display: flex; align-items: center; }
-.vacs-anchor { font-size: 11px; font-weight: 600; color: var(--ink-3); line-height: 1.2; text-align: center; }
-.vacs-opt[aria-checked="true"] { border-color: var(--indigo); background: var(--indigo-soft); }
-.vacs-opt[aria-checked="true"] .vacs-anchor { color: var(--indigo); }
+.vacs-opt:active { transform: translateY(2px); box-shadow: none; }
+.vacs-emoji { font-size: 36px; line-height: 1; min-height: 42px; display: flex; align-items: center; }
+.vacs-anchor { font-size: 13.5px; font-weight: 700; color: var(--tinta-2); line-height: 1.2; text-align: center; }
+.vacs-opt[aria-checked="true"] {
+  border-color: var(--utama); background: var(--utama-mud);
+  box-shadow: 0 3px 0 var(--utama-tua);
+}
+.vacs-opt[aria-checked="true"] .vacs-anchor { color: var(--utama-tua); }
+/* Denyut singkat saat dipilih: 700 ms sebelum layar berganti, anak perlu melihat
+   pilihannya benar-benar terkunci — kalau tidak, salah tekan langsung jadi data. */
+.vacs-opt[aria-checked="true"] .vacs-emoji { animation: denyut .32s ease; }
+@keyframes denyut { 0%, 100% { transform: scale(1) } 45% { transform: scale(1.22) } }
 
-@media (max-width: 360px) {
-  .vacs-emoji { font-size: 28px; }
-  .vacs-anchor { font-size: 10px; }
+@media (max-width: 370px) {
+  .vacs-opt { min-height: 106px; padding: 10px 2px; }
+  .vacs-emoji { font-size: 30px; min-height: 34px; }
+  .vacs-anchor { font-size: 12px; }
 }
 
-/* ── Kartu emoji (Memory Maze, Move & Match) ─────────────────────────────── */
+/* ── Titik langkah VACS ─────────────────────────────────────────────────── */
+.titik { display: flex; gap: 6px; justify-content: center; align-items: center; padding: 2px 0 4px; }
+.titik i { display: block; width: 9px; height: 9px; border-radius: 999px; background: rgba(34, 48, 82, .15); transition: width .25s, background .25s; }
+.titik i.kini { width: 26px; background: var(--utama); }
+.titik i.usai { background: var(--utama-mud); }
+
+/* ── Kartu emoji (Ingat Gambar, Cari Pasangan) ──────────────────────────── */
 .emoji-grid {
   display: grid; grid-template-columns: repeat(var(--cols, 4), 1fr);
-  gap: clamp(6px, 2vw, 12px); max-width: 480px; width: 100%; margin: 0 auto;
+  gap: clamp(7px, 2.2vw, 13px); max-width: 480px; width: 100%; margin: 0 auto;
 }
 .emoji-card {
   display: flex; align-items: center; justify-content: center;
-  aspect-ratio: 1; width: 100%; font-size: clamp(28px, 9vw, 44px);
-  background: #fff; border: 2px solid var(--line); border-radius: var(--r-md);
-  font-family: inherit; transition: transform .12s, border-color .12s, background .12s;
+  aspect-ratio: 1; width: 100%; font-size: clamp(30px, 9.5vw, 46px);
+  background: var(--kertas); border: 2.5px solid var(--garis); border-radius: var(--r-lg);
+  font-family: var(--teks); box-shadow: 0 3px 0 rgba(34, 48, 82, .07);
+  transition: transform .12s, border-color .12s, background .12s, box-shadow .12s;
 }
 button.emoji-card { cursor: pointer; }
-button.emoji-card:active { transform: scale(.94); }
-.emoji-card.selected { border-color: var(--indigo); background: var(--indigo-soft); transform: scale(.96); }
-.emoji-card.correct { border-color: var(--ok); background: #D1FAE5; }
-.emoji-card.wrong { border-color: var(--bad); background: #FEE2E2; }
-.emoji-card.show { border-color: var(--indigo-line); background: var(--indigo-soft); }
+button.emoji-card:active { transform: translateY(2px); box-shadow: none; }
+.emoji-card.selected { border-color: var(--utama); background: var(--utama-mud); box-shadow: 0 3px 0 var(--utama-tua); }
+.emoji-card.correct { border-color: var(--benar); background: var(--benar-mud); box-shadow: 0 3px 0 var(--benar-tua); }
+.emoji-card.wrong { border-color: var(--salah); background: var(--salah-mud); box-shadow: 0 3px 0 var(--salah-tua); }
+/* Fase mengingat: kartu ditonjolkan agar mata anak tertuju ke sana dan tidak ke
+   hiasan lain di layar. */
+.emoji-card.show {
+  border-color: var(--g); background: var(--g-terang);
+  box-shadow: 0 4px 0 var(--g-tua); animation: muncul .3s cubic-bezier(.2, 1.3, .4, 1) both;
+}
+@keyframes muncul { from { transform: scale(.72); opacity: 0 } to { transform: none; opacity: 1 } }
 
-/* ── Focus Tower ───────────────────────────────────────────────────────────
-   Baris wadah palsu adalah elemen BIASA dalam aliran dokumen — bukan overlay
-   position:fixed berkoordinat beku seperti v2.1 (cacat §4.3). Ia karenanya tidak bisa
-   menimpa teks instruksi, dan ikut bergerak sendiri saat halaman digulir atau diputar. */
+/* ── Cocokkan Bentuk ─────────────────────────────────────────────────────────
+   Arena dulu setinggi 150px — sepotong tipis di layar setinggi 800px, terbaca sebagai
+   widget formulir, bukan gelanggang. Sekarang tingginya mengikuti layar, dan JARAK
+   JATUHNYA IKUT DIHITUNG DARI VARIABEL YANG SAMA; kalau tidak, balok akan berhenti di
+   udara atau menembus dasar arena pada ponsel yang lebih tinggi. */
 .ft-screen { position: relative; }
 .ft-instruksi { position: relative; z-index: 2; }
-
-.ft-arena { position: relative; height: 150px; overflow: hidden; }
+.ft-arena {
+  --balok: 66px;
+  /* flex:1 — arena MENELAN sisa tinggi layar, sehingga ketiga wadah selalu duduk di dasar
+     dan baloknya benar-benar terlihat menempuh perjalanan menuju wadah. Sebelumnya
+     tingginya dipatok angka, wadahnya berhenti di tengah layar, dan sepertiga bawah
+     dibiarkan kosong. */
+  position: relative; flex: 1; min-height: 168px; overflow: hidden;
+  /* TANPA latar dan TANPA bingkai, dan itu justru inti perbaikannya. Diberi latar putih
+     dan garis tepi, arena terbaca sebagai kartu kosong yang kebetulan berisi satu bentuk
+     kecil — sebuah widget, bukan gelanggang. Dibiarkan tembus, satu-satunya benda padat
+     di layar adalah baloknya dan ketiga wadah di bawah, sehingga mata anak mengikuti
+     baloknya turun menuju wadah. Itulah tugas yang sedang dikerjakannya. */
+  background: none;
+}
 .ft-balok {
-  position: absolute; left: 50%; top: 0;
-  animation: ft-fall var(--fall, 3s) linear forwards;
+  position: absolute; left: 50%; top: 0; transform: translateX(-50%);
+  filter: drop-shadow(0 5px 8px rgba(34, 48, 82, .22));
+  animation: ft-jatuh var(--fall, 3s) linear forwards;
 }
-@keyframes ft-fall {
-  from { transform: translate(-50%, -10px); }
-  to   { transform: translate(-50%, 118px); }
+/* Yang dianimasikan `top`, bukan transform, dan itu bukan kelalaian: transform dalam
+   persen dihitung dari kotak ELEMEN ITU SENDIRI, sedangkan `top` dihitung dari tinggi
+   arenanya. Hanya dengan `top` jarak jatuhnya ikut menyesuaikan arena yang tingginya
+   kini ditentukan sisa layar — di ponsel yang lebih tinggi, balok versi lama berhenti
+   menggantung di udara. */
+@keyframes ft-jatuh {
+  from { top: 4px; }
+  to   { top: calc(100% - var(--balok)); }
 }
 
-.ft-wadah-baris, .ft-palsu {
-  display: flex; gap: 10px; justify-content: center;
-  max-width: 420px; width: 100%; margin: 0 auto;
-}
+.ft-wadah-baris, .ft-palsu { display: flex; gap: 11px; justify-content: center; max-width: 430px; width: 100%; margin: 0 auto; }
 .ft-wadah {
   flex: 1; display: flex; align-items: center; justify-content: center;
-  min-height: 74px; background: #fff; border: 3px solid var(--line);
-  border-top-width: 0; border-radius: 0 0 var(--r-md) var(--r-md);
-  cursor: pointer; font-family: inherit; transition: transform .1s, border-color .12s;
+  min-height: 82px; background: var(--kertas);
+  border: 3px solid var(--garis); border-top-width: 0;
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+  cursor: pointer; font-family: var(--teks);
+  box-shadow: 0 4px 0 rgba(34, 48, 82, .08);
+  transition: transform .1s, border-color .12s, box-shadow .1s;
 }
-button.ft-wadah:active { transform: scale(.94); border-color: var(--indigo); }
+button.ft-wadah:active { transform: translateY(3px); border-color: var(--utama); box-shadow: none; }
 
-/* Palsu SENGAJA tampil berbeda: v2.1 membuatnya identik dengan yang asli, sehingga yang
+/* Baris palsu SENGAJA berbeda: v2.1 membuatnya identik dengan yang asli, sehingga yang
    terukur adalah "bisakah anak menebak mana yang asli" — tugas diskriminasi, bukan
-   ketahanan terhadap gangguan. Di sini ia mencuri perhatian tanpa membuat tugasnya ambigu. */
-/* Bisa diketuk AGAR ketukannya tercatat sebagai ukuran distraksi; ketukan itu tidak
-   berpengaruh apa pun pada permainan. Sebelumnya `pointer-events: none` membuat
-   pendengar klik di focus-tower.js tidak pernah menyala, sehingga kolom
-   distractorClicked selalu false. */
+   ketahanan terhadap gangguan. Ia harus mencuri perhatian tanpa membuat tugasnya ambigu.
+   Bisa diketuk agar ketukannya tercatat; ketukan itu tidak mengubah jalannya permainan. */
 .ft-palsu { margin-bottom: 6px; cursor: default; }
 .ft-wadah.palsu {
-  opacity: .45; border-style: dashed; border-width: 2px; border-top-width: 2px;
-  border-radius: var(--r-md); min-height: 56px; background: transparent;
+  opacity: .5; border-style: dashed; border-width: 2.5px; border-top-width: 2.5px;
+  border-radius: var(--r-md); min-height: 60px; background: transparent; box-shadow: none;
   animation: ft-goyang 1.1s ease-in-out infinite;
 }
 @keyframes ft-goyang {
-  0%, 100% { transform: translateX(-5px) rotate(-2deg); }
-  50%      { transform: translateX(5px) rotate(2deg); }
+  0%, 100% { transform: translateX(-5px) rotate(-2deg) }
+  50%      { transform: translateX(5px) rotate(2deg) }
 }
+
+/* Layar yang isinya sedikit — penjelasan latihan, kuesioner — sebelumnya menumpuk di
+   tepi atas dan menyisakan separuh layar kosong di bawah. Selain terlihat belum jadi,
+   pilihan jawaban jadi berada di luar jangkauan ibu jari pada ponsel besar. */
+.screen.tengah { justify-content: center; }
 
 .ft-fb {
-  position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%);
-  padding: 10px 20px; border-radius: 14px; font-weight: 800; font-size: 18px;
-  z-index: 3; animation: fade .2s ease;
+  position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%);
+  padding: 12px 22px; border-radius: var(--r-md);
+  font-family: var(--judul); font-weight: 600; font-size: 21px;
+  z-index: 3; box-shadow: var(--angkat);
+  animation: fb-pop .26s cubic-bezier(.2, 1.4, .4, 1) both;
 }
-.ft-fb.ok { background: #D1FAE5; color: #047857; }
-.ft-fb.no { background: #FEE2E2; color: #B91C1C; }
-
-@media (prefers-reduced-motion: reduce) {
-  .ft-balok { animation: none; transform: translate(-50%, 50px); }
-  .ft-wadah.palsu { animation: none; }
+.ft-fb.ok { background: var(--benar-mud); color: var(--benar-tua); }
+.ft-fb.no { background: var(--salah-mud); color: var(--salah-tua); }
+@keyframes fb-pop {
+  from { transform: translate(-50%, -50%) scale(.6); opacity: 0 }
+  to   { transform: translate(-50%, -50%) scale(1); opacity: 1 }
 }
 
-/* ── Move & Match ──────────────────────────────────────────────────────────
-   Kartu tampil terbuka: komponen memorinya adalah tugas Memory Maze (EK2). Tugas di sini
-   adalah tuntutan FISIK — menyeret — sesuai Tabel 2.2 "jumlah sentuhan & gerakan layar". */
+/* ── Cari Pasangan ─────────────────────────────────────────────────────────── */
 .mv-grid {
   display: grid; grid-template-columns: repeat(var(--cols, 4), 1fr);
-  gap: clamp(8px, 2.5vw, 14px); max-width: 460px; width: 100%; margin: 0 auto;
-  touch-action: none;   /* wajib agar pointermove tidak diambil alih gulir halaman */
+  gap: clamp(9px, 2.5vw, 15px); max-width: 460px; width: 100%; margin: 0 auto;
+  touch-action: none;   /* wajib: tanpa ini pointermove diambil alih gulir halaman */
 }
 .mv-card {
   display: flex; align-items: center; justify-content: center;
-  aspect-ratio: 1; font-size: clamp(30px, 10vw, 46px);
-  background: #fff; border: 2px solid var(--line); border-radius: var(--r-md);
+  aspect-ratio: 1; font-size: clamp(32px, 10vw, 48px);
+  background: var(--kertas); border: 2.5px solid var(--garis); border-radius: var(--r-lg);
   cursor: grab; user-select: none; -webkit-user-select: none;
-  transition: transform .12s, border-color .12s, background .12s, opacity .12s;
+  box-shadow: 0 4px 0 rgba(34, 48, 82, .08);
+  transition: transform .12s, border-color .12s, background .12s, opacity .12s, box-shadow .12s;
 }
-/* Netral saat diseret — bukan hijau. Hijau di v2.1 berarti "benar", lalu kartunya ditutup
-   lagi kalau ternyata tidak cocok: sinyal keliru bagi anak (cacat §7.4). */
-.mv-card.sumber { opacity: .35; border-color: var(--indigo); border-style: dashed; }
-.mv-card.dragging { cursor: grabbing; border-color: var(--indigo); background: var(--indigo-soft); box-shadow: 0 8px 24px rgba(79,70,229,.3); }
-.mv-card.matched { border-color: var(--ok); background: #D1FAE5; cursor: default; }
-.mv-card.salah { border-color: var(--bad); background: #FEE2E2; animation: mv-getar .4s; }
-@keyframes mv-getar { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-7px)} 75%{transform:translateX(7px)} }
+/* Netral saat diseret — BUKAN hijau. Hijau di seluruh aplikasi berarti "benar"; v2.1
+   memakainya untuk kartu yang baru diangkat lalu menutupnya lagi bila ternyata tidak
+   cocok, memberi anak sinyal keliru (cacat §7.4). */
+.mv-card.sumber { opacity: .35; border-color: var(--utama); border-style: dashed; box-shadow: none; }
+.mv-card.dragging {
+  cursor: grabbing; border-color: var(--utama); background: var(--utama-mud);
+  box-shadow: 0 14px 30px rgba(34, 48, 82, .35); border-radius: var(--r-lg);
+}
+.mv-card.matched { border-color: var(--benar); background: var(--benar-mud); box-shadow: 0 4px 0 var(--benar-tua); cursor: default; }
+.mv-card.salah { border-color: var(--salah); background: var(--salah-mud); animation: getar .4s; }
+@keyframes getar { 0%, 100% { transform: translateX(0) } 25% { transform: translateX(-7px) } 75% { transform: translateX(7px) } }
 
-@media (prefers-reduced-motion: reduce) { .mv-card.salah { animation: none; } }
-
-/* ── Puzzle Emosi ──────────────────────────────────────────────────────────
-   Kapsul penghitung waktu: latarnya berubah mengikuti sisa waktu, TEKSNYA SELALU PUTIH.
-   Cacat PE-C v2.1 menyetel keduanya dari ekspresi yang sama sehingga angkanya lenyap. */
+/* ── Susun Angka ─────────────────────────────────────────────────────────────
+   Kapsul waktu: latarnya berubah mengikuti sisa waktu, TEKSNYA SELALU PUTIH. Cacat
+   PE-C v2.1 menyetel keduanya dari ekspresi yang sama, sehingga angkanya lenyap sejak
+   tik pertama dan tak pernah kembali — padahal ini satu-satunya permainan berbatas waktu. */
 .pe-num {
-  padding: 4px 11px; border-radius: 11px;
-  font-size: 14px; font-weight: 800; color: #fff; background: var(--ok);
-  min-width: 46px; text-align: center; font-variant-numeric: tabular-nums;
+  padding: 7px 14px; border-radius: 999px;
+  font-family: var(--judul); font-size: 17px; font-weight: 600;
+  color: #fff; background: var(--benar);
+  min-width: 62px; text-align: center; font-variant-numeric: tabular-nums;
+  box-shadow: 0 3px 0 rgba(34, 48, 82, .14);
 }
-
-.pe-wrap { display: flex; align-items: flex-start; justify-content: center; gap: 14px; flex-wrap: wrap; }
-.pe-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: min(270px, 68vw); }
-.pe-board.mini { width: 78px; gap: 3px; }
-
+/* Bentuk tujuan ditaruh sebagai SATU STRIP MENDATAR DI ATAS papan.
+   Menaruhnya di samping papan tidak bisa diandalkan: lebar strip ditentukan oleh
+   labelnya ("Harus jadi begini" ±110px), bukan oleh papan kecilnya yang 76px, sehingga
+   pada 360px barisnya tetap terlipat — dan begitu terlipat, contohnya jatuh DI BAWAH
+   papan, tempat anak harus menggeser pandangan naik-turun antara yang sedang disusun dan
+   bentuk yang dituju. Sebagai strip mendatar, lebarnya selalu muat dan tujuannya berada
+   tepat di atas papan, searah dengan arah baca. */
+.pe-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.pe-target { order: -1; display: flex; align-items: center; gap: 9px; }
+.pe-target p { margin: 0; }
+.pe-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; width: min(252px, 63vw); }
+.pe-board.mini { width: 76px; gap: 3px; }
 .pe-tile {
   display: flex; align-items: center; justify-content: center; aspect-ratio: 1;
-  font-family: inherit; font-size: clamp(24px, 8vw, 34px); font-weight: 800; color: var(--ink);
-  background: #fff; border: 2px solid var(--line); border-radius: 12px;
-  transition: transform .1s, border-color .12s, background .12s;
+  font-family: var(--judul); font-size: clamp(26px, 8.5vw, 36px); font-weight: 600; color: var(--tinta);
+  background: var(--kertas); border: 2.5px solid var(--garis); border-radius: var(--r-md);
+  box-shadow: 0 3px 0 rgba(34, 48, 82, .08);
+  transition: transform .1s, border-color .12s, background .12s, box-shadow .1s;
 }
 button.pe-tile { cursor: pointer; }
-button.pe-tile:active { transform: scale(.93); }
-.pe-tile.bisa { border-color: var(--indigo-line); }
-.pe-tile.sorot { border-color: var(--indigo); background: var(--indigo-soft); animation: pe-denyut .6s ease 2; }
-.pe-tile.kosong { background: var(--indigo-soft); border-style: dashed; border-color: var(--indigo-line); }
-.pe-tile.mini { font-size: 13px; font-weight: 700; border-width: 1px; border-radius: 5px; color: var(--ink-3); }
-@keyframes pe-denyut { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+button.pe-tile:active { transform: translateY(2px); box-shadow: none; }
+/* SENGAJA samar. Membuat petak yang bisa digeser mencolok akan membuat tombol Bantuan
+   nyaris tak pernah ditekan — padahal jumlah penekanannya adalah data yang dikumpulkan
+   permainan ini. Petunjuknya memang tugas tombol itu, bukan tugas papan. */
+.pe-tile.bisa { border-color: var(--g-terang); }
+.pe-tile.sorot { border-color: var(--g); background: var(--g-terang); animation: pe-denyut .6s ease 2; }
+.pe-tile.kosong { background: rgba(34, 48, 82, .05); border-style: dashed; box-shadow: none; }
+.pe-tile.mini { font-size: 14px; border-width: 1.5px; border-radius: 6px; color: var(--tinta-3); box-shadow: none; }
+@keyframes pe-denyut { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.07) } }
 
-.pe-fb { min-height: 24px; text-align: center; font-size: 14.5px; font-weight: 600; color: var(--indigo); }
+.pe-fb { min-height: 26px; text-align: center; font-size: 16px; font-weight: 700; color: var(--g-tua); }
+/* Cacat §7.7: bohlam kuning muda di atas latar kuning muda nyaris tak terlihat.
+   Teks di atas kuning GELAP, bukan putih — putih di atas kuning hanya 2.4:1. */
+.pe-hint { background: var(--awas); color: var(--awas-teks); --bibir: var(--awas-tua); }
+.pe-stress { background: var(--kertas); color: var(--tinta-2); --bibir: var(--garis); }
 
-/* Cacat §7.7: bohlam kuning muda di atas latar kuning muda nyaris tak terlihat. */
-.pe-hint { background: #FDE68A; color: #78350F; }
-.pe-stress { background: #FF6B6B; color: #fff; }
+/* ── Perayaan ────────────────────────────────────────────────────────────────
+   Dipicu saat MENYELESAIKAN sesuatu, tidak pernah untuk satu jawaban benar. Menguatkan
+   umpan balik per-jawaban akan mengubah tuntutan mental dan frustrasi yang justru sedang
+   diukur; merayakan penyelesaian tidak, karena setiap anak sampai ke sana. */
+.pesta { position: fixed; inset: 0; pointer-events: none; z-index: 50; overflow: hidden; }
+.pesta i {
+  position: absolute; top: -24px; width: 11px; height: 15px; border-radius: 3px;
+  animation: turun var(--lama, 2.4s) linear var(--tunda, 0s) forwards;
+}
+@keyframes turun {
+  from { transform: translateY(0) rotate(0); opacity: 1 }
+  to   { transform: translateY(104vh) rotate(720deg); opacity: .85 }
+}
+.rayakan { animation: rayakan .62s cubic-bezier(.2, 1.5, .4, 1) both; }
+@keyframes rayakan { 0% { transform: scale(.4); opacity: 0 } 60% { transform: scale(1.12) } 100% { transform: scale(1); opacity: 1 } }
 
-@media (prefers-reduced-motion: reduce) { .pe-tile.sorot { animation: none; } }
+/* ── Gerak berkurang ─────────────────────────────────────────────────────────
+   Satu blok untuk semuanya. Sebelumnya tersebar di empat tempat dan animasi baru
+   gampang lupa didaftarkan. Balok jatuh TIDAK dimatikan — ia mekanika permainan,
+   bukan hiasan; ia hanya kehilangan efek lain di sekelilingnya. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .ft-balok { animation: ft-jatuh var(--fall, 3s) linear forwards !important; }
+  .pesta { display: none; }
+}

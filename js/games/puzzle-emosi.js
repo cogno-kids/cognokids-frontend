@@ -23,8 +23,8 @@
 //  §7.7 (P3) — emoji bohlam pada tombol "💡 Bantuan" nyaris tak terlihat: kuning muda di atas
 //              latar kuning muda.
 
-import { escapeHtml } from '../util.js';
 import { pickBoards, neighbors, isSolved, JARAK_BAKU } from './puzzle-logic.js';
+import { bilah, layar } from '../components/ui.js';
 
 export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
   const papanBabak = pickBoards(game.rounds);
@@ -76,34 +76,34 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
     const num = app.querySelector('#pe-num');
     if (bar) {
       bar.style.width = `${pct}%`;
-      bar.style.background = pct < 25 ? 'var(--bad)' : pct < 50 ? 'var(--warn)' : 'var(--ok)';
+      bar.style.background = pct < 25 ? 'var(--salah)' : pct < 50 ? 'var(--awas)' : 'var(--benar)';
     }
     if (num) {
       num.textContent = `⏱ ${tLeft}`;
       // Latar berubah mengikuti sisa waktu — TEKS TETAP PUTIH. Inilah cacat PE-C:
       // v2.1 menyetel keduanya dari ekspresi yang sama, sehingga angkanya lenyap.
-      num.style.background = pct < 25 ? 'var(--bad)' : pct < 50 ? 'var(--warn)' : 'var(--ok)';
+      // Latar berubah, TEKS TETAP PUTIH. Kuning memakai teks gelap di mana pun kecuali
+      // di sini: kapsul ini berpindah warna tiap beberapa detik, dan teks yang ikut
+      // berpindah warna justru berkedip. Kuningnya karena itu dipekatkan.
+      num.style.background = pct < 25 ? 'var(--salah)' : pct < 50 ? 'var(--awas-tua)' : 'var(--benar)';
       num.style.color = '#fff';
     }
   }
 
   function gambar(fb = '') {
     const bisaGeser = new Set(neighbors(empty));
-    app.innerHTML = `
-      <div class="topbar">
-        <span style="font-size:22px" aria-hidden="true">${game.emoji}</span>
-        <div style="flex:1">
-          <h1>${escapeHtml(game.childName)}</h1>
-          <div class="sub">Babak ${ri + 1} dari ${game.rounds}</div>
-        </div>
-        <span class="pe-num" id="pe-num">⏱ ${tLeft}</span>
-      </div>
-      <div class="progress"><i id="pe-bar" style="width:100%;background:var(--ok)"></i></div>
-
-      <div class="screen">
-        <div class="card center" style="padding:12px">
-          <h3>Urutkan angka <b style="color:var(--indigo)">1 sampai 8</b>!</h3>
-          <p class="muted" style="font-size:13px;margin-top:3px">Geser kotak ke tempat yang kosong</p>
+    app.innerHTML = bilah({
+      emoji: game.emoji,
+      judul: game.childName,
+      sub: `Babak ${ri + 1} dari ${game.rounds}`,
+      kanan: `<span class="pe-num" id="pe-num">⏱ ${tLeft}</span>`,
+      warna: game.warna,
+    }) +
+      '<div class="progress"><i id="pe-bar" style="width:100%;background:var(--benar)"></i></div>' +
+      layar(`
+        <div class="card center" style="padding:14px">
+          <h3>Urutkan angka <b>1 sampai 8</b>!</h3>
+          <p class="muted" style="margin-top:4px">Geser kotak ke tempat yang kosong</p>
         </div>
 
         <div class="pe-wrap">
@@ -114,7 +114,7 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
                          data-i="${i}" aria-label="Angka ${t}${bisaGeser.has(i) ? ', bisa digeser' : ''}">${t}</button>`).join('')}
           </div>
           <div class="pe-target" aria-hidden="true">
-            <p class="muted" style="font-size:11.5px;margin-bottom:4px">Harus jadi begini</p>
+            <p class="kecil">Harus jadi begini</p>
             <div class="pe-board mini">
               ${[1,2,3,4,5,6,7,8,null].map((t) =>
                 `<div class="pe-tile mini${t === null ? ' kosong' : ''}">${t ?? ''}</div>`).join('')}
@@ -124,14 +124,14 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
 
         <div class="pe-fb" id="pe-fb">${fb}</div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">
           <button class="btn pe-hint" id="pe-hint">💡 Bantuan</button>
           <button class="btn pe-stress" id="pe-stress">😫 Aku kesal</button>
         </div>
-        <p class="muted center" style="font-size:12.5px;margin-top:6px">
+        <p class="kecil center">
           Tekan 💡 kalau bingung. Tekan 😫 kalau kesal — permainannya tetap jalan.
-        </p>
-      </div>`;
+        </p>`,
+        { warna: game.warna });
 
     perbaruiTimer();
     app.querySelector('#pe-board').addEventListener('click', (ev) => {
@@ -198,6 +198,12 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
     selesaiBabak = true;
     clearInterval(tickId);
     gambar(pesan);
+    // TIDAK ADA perayaan di sini, dan itu keputusan sadar. Babak ini berakhir dengan dua
+    // cara: papannya tersusun, atau waktunya habis. Merayakan yang pertama saja berarti
+    // memberi tanda "kamu berhasil / kamu tidak" tepat sebelum anak ditanya apakah tadi
+    // ia main bagus dan apakah ia kesal — dua pertanyaan yang justru menyusun dimensi
+    // yang permainan ini ukur. Perayaan hanya boleh di layar penutup, yang dicapai
+    // setiap anak tanpa kecuali.
 
     setTimeout(() => {
       ri += 1;

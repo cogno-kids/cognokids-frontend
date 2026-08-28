@@ -1,25 +1,57 @@
-// pages/vacs.js — enam pertanyaan VACS setelah tiap mini-game.
+// pages/vacs.js — enam pertanyaan setelah tiap mini-game.
 //
 // Memperbaiki dua cacat v2.1:
-//  §7.2 — badge "Mental Demand → EK2" tampil di atas setiap pertanyaan, dan badge
-//         "EK1".."EK4" tampil di bilah atas. Selain membingungkan anak sembilan tahun,
-//         itu memberi petunjuk tentang apa yang "seharusnya" dirasakan → demand
-//         characteristics. Di v3 label riset TIDAK PERNAH menyentuh DOM layar anak.
+//  §7.2 — badge nama dimensi tampil di atas setiap pertanyaan, dan badge "EK1".."EK4"
+//         tampil di bilah atas. Selain membingungkan anak sembilan tahun, itu memberi
+//         petunjuk tentang apa yang "seharusnya" dirasakan → demand characteristics.
+//         Di v3 label riset TIDAK PERNAH menyentuh DOM layar anak.
 //  §7.5 — target sentuh emoji ±48px. Untuk anak SD terlalu kecil; di sini ≥64px.
 //
 // Ditambah: waktu respons per item direkam. v2.1 tidak menyimpannya sama sekali.
+//
+// ── Rombakan rupa v3.9 ──────────────────────────────────────────────────────────────
+//
+// (a) LABEL SKALA. Perubahan terpenting di berkas ini ada di CSS, dan ia bukan soal
+//     selera: "Tidak · Sedikit · Lumayan · Banyak · Banyak sekali" adalah satu-satunya
+//     hal yang memberi makna pada kelima emoji, namun sampai v3.8 ia dirender 11px
+//     berwarna abu pucat — teks terkecil sekaligus terpucat di seluruh aplikasi. Anak
+//     yang tidak membacanya akan menebak dari wajah emoji saja, dan jawabannya lalu
+//     mengukur tafsir emoji, bukan pengalamannya. Sekarang 13,5px, tebal, dan sewarna
+//     teks bacaan.
+//
+// (b) MASKOT TIDAK MUNCUL DI SINI. Layar ini dan layar latihan adalah satu-satunya
+//     tempat Puti dilarang hadir, termasuk di kartu penjelasan. Wajah di dekat sebuah
+//     pertanyaan perasaan adalah petunjuk jawaban. Dijaga test/tampilan.test.mjs.
+//
+// (c) LATIHAN DIPECAH DUA LANGKAH. Sebelumnya penjelasan dan pertanyaan latihan
+//     ditumpuk di satu layar, sehingga anak membaca "Nanti kami tanya sedikit" dan
+//     sebuah pertanyaan sungguhan sekaligus, lalu harus menebak mana yang harus
+//     dijawab. Sekarang: dijelaskan dulu, baru berlatih. Pemisahan ini juga yang
+//     memungkinkan Puti menjelaskan tanpa pernah berdiri di sebelah skala.
 
 import { VACS_ITEMS } from '../config.js';
+import { escapeHtml } from '../util.js';
+import { bilah, layar, titik } from '../components/ui.js';
+import { sapaan } from '../components/maskot.js';
 
-const DOT = (on, done) =>
-  `<span style="width:${on ? 22 : 8}px;height:8px;border-radius:4px;transition:width .2s;
-     background:${on ? 'var(--indigo)' : done ? 'var(--indigo-line)' : '#E5E7EB'}"></span>`;
+/** Lima tombol skala. Dipakai layar sungguhan maupun layar latihan. */
+function skala(item, terpilih) {
+  return `<div class="vacs-opts" role="radiogroup" aria-label="${escapeHtml(item.childText)}">
+      ${item.emoji.map((e, i) => `
+        <button type="button" class="vacs-opt" role="radio" aria-checked="${terpilih === i + 1}"
+                data-v="${i + 1}" aria-label="${escapeHtml(item.anchors[i])}">
+          <span class="vacs-emoji" aria-hidden="true">${e}</span>
+          <span class="vacs-anchor">${escapeHtml(item.anchors[i])}</span>
+        </button>`).join('')}
+    </div>`;
+}
 
 /**
  * @param {HTMLElement} app
- * @param {{gameName:string, gameEmoji:string, onDone:(answers:number[], rts:number[])=>void}} opts
+ * @param {{gameName:string, gameEmoji:string, gameWarna:Object,
+ *          onDone:(answers:number[], rts:number[])=>void}} opts
  */
-export function renderVACS(app, { gameName, gameEmoji, onDone }) {
+export function renderVACS(app, { gameName, gameEmoji, gameWarna, onDone }) {
   const answers = new Array(VACS_ITEMS.length).fill(null);
   const rts = new Array(VACS_ITEMS.length).fill(null);
   let q = 0;
@@ -27,43 +59,29 @@ export function renderVACS(app, { gameName, gameEmoji, onDone }) {
 
   function draw() {
     const item = VACS_ITEMS[q];
-    // Perhatikan: item.tlx dan item.ek TIDAK dirender. Itu disengaja.
-    //
     // Judul di bilah atas sengaja BUKAN kalimat tanya. Di bawahnya sudah ada pertanyaan
     // sungguhan, dan anak yang melihat dua kalimat tanya bertumpuk tidak tahu yang mana
-    // harus dijawab.
-    app.innerHTML = `
-      <div class="topbar">
-        <span style="font-size:22px" aria-hidden="true">${gameEmoji}</span>
-        <div style="flex:1">
-          <h1>Sekarang kami mau tanya</h1>
-          <div class="sub">Setelah bermain ${escapeHtml(gameName)}</div>
-        </div>
-      </div>
-      <div class="screen">
-        <div style="display:flex;gap:5px;justify-content:center;align-items:center;padding:4px 0">
-          ${VACS_ITEMS.map((_, i) => DOT(i === q, i < q)).join('')}
+    // harus dijawab. Nama dimensi riset item ini juga tidak dirender — itu disengaja.
+    app.innerHTML =
+      bilah({
+        emoji: gameEmoji,
+        judul: 'Sekarang kami mau tanya',
+        sub: `Setelah bermain ${gameName}`,
+        warna: gameWarna,
+      }) +
+      layar(`
+        ${titik(q, VACS_ITEMS.length)}
+
+        <div class="card center tanya">
+          <p class="kecil">Pertanyaan ${q + 1} dari ${VACS_ITEMS.length}</p>
+          <h2>${escapeHtml(item.childText)}</h2>
+          <p class="muted">Tidak ada yang benar atau salah. Pilih gambar yang paling cocok buat kamu 💙</p>
         </div>
 
-        <div class="card">
-          <p class="muted" style="font-size:13.5px">Pertanyaan ${q + 1} dari ${VACS_ITEMS.length}</p>
-          <h2 style="margin-top:6px;line-height:1.35">${escapeHtml(item.childText)}</h2>
-          <p class="muted" style="margin-top:10px;font-size:14.5px">
-            Tidak ada yang benar atau salah. Pilih gambar yang paling cocok buat kamu 💙
-          </p>
-        </div>
+        ${skala(item, answers[q])}
 
-        <div class="vacs-opts" role="radiogroup" aria-label="${escapeHtml(item.childText)}">
-          ${item.emoji.map((e, i) => `
-            <button type="button" class="vacs-opt" role="radio" aria-checked="${answers[q] === i + 1}"
-                    data-v="${i + 1}" aria-label="${escapeHtml(item.anchors[i])}">
-              <span class="vacs-emoji" aria-hidden="true">${e}</span>
-              <span class="vacs-anchor">${escapeHtml(item.anchors[i])}</span>
-            </button>`).join('')}
-        </div>
-
-        ${q > 0 ? '<button class="btn btn-ghost" id="v-back">← Kembali</button>' : ''}
-      </div>`;
+        ${q > 0 ? '<button class="btn btn-ghost" id="v-back">← Kembali</button>' : ''}`,
+        { warna: gameWarna, kelas: 'tengah' });
 
     app.querySelector('.vacs-opts').addEventListener('click', (ev) => {
       const btn = ev.target.closest('button[data-v]');
@@ -93,65 +111,62 @@ export function renderVACS(app, { gameName, gameEmoji, onDone }) {
 }
 
 /**
- * Layar latihan sebelum blok VACS pertama — dipertahankan dari v2.1, salah satu bagian
- * yang sudah bagus (pipeline §10). Jawabannya TIDAK direkam.
+ * Latihan sebelum blok pertama — dipertahankan dari v2.1, salah satu bagian yang sudah
+ * bagus (pipeline §10). Jawabannya TIDAK direkam.
+ *
+ * Dua langkah: Puti menjelaskan, lalu anak mencoba sekali.
  */
 export function renderVACSTraining(app, { onDone }) {
   const contoh = VACS_ITEMS[0];
+  let langkah = 0;
   let picked = null;
 
-  function draw() {
-    // Teksnya berbunyi "pilih gambar", BUKAN "pilih gambar wajah": V3 memakai
-    // 🪑🤏👋🤸🏃 — kursi dan orang berlari, tidak satu pun wajah. Anak yang disuruh
-    // mencari wajah akan bingung ketika pertanyaan itu muncul.
-    app.innerHTML = `
-      <div class="topbar"><span style="font-size:22px" aria-hidden="true">💡</span><h1>Latihan dulu</h1></div>
-      <div class="screen">
-        <div class="card">
-          <h2>Nanti kami tanya sedikit</h2>
-          <p class="muted" style="margin-top:8px">
-            Setiap habis main, kamu tinggal pilih gambar yang paling cocok.<br>
-            Tidak ada yang benar atau salah 💙
-          </p>
-        </div>
+  function jelaskan() {
+    app.innerHTML =
+      bilah({ emoji: '💡', judul: 'Sebelum mulai' }) +
+      layar(`
+        ${sapaan('tunjuk', `Setiap habis main, aku tanya sedikit.<br>
+          Kamu tinggal pilih gambar yang paling cocok.<br>
+          <b>Tidak ada yang benar atau salah.</b>`, 124, { tegak: true })}
+        <button class="btn btn-primary" id="t-next">Oke, coba dulu →</button>`,
+        { kelas: 'tengah' });
+    app.querySelector('#t-next').addEventListener('click', () => { langkah = 1; gambar(); });
+  }
 
-        <div class="card">
+  function berlatih() {
+    // Pertanyaannya berbunyi "Tadi kamu ...?" padahal anak belum bermain apa pun. Tanpa
+    // pembingkaian ini ia tidak punya "tadi" untuk dijawab — dan jawaban pertamanya
+    // itulah yang membentuk cara ia mengisi 24 pertanyaan berikutnya.
+    app.innerHTML =
+      bilah({ emoji: '💡', judul: 'Latihan dulu' }) +
+      layar(`
+        <div class="card center tanya">
           <span class="badge badge-warn">Latihan saja</span>
-          <p class="muted" style="margin-top:8px;font-size:14px">
-            Coba dulu ya. Anggap saja kamu baru selesai main.
-          </p>
-          <h2 style="margin-top:6px;line-height:1.35">${escapeHtml(contoh.childText)}</h2>
+          <p class="muted" style="margin-top:10px">Anggap saja kamu baru selesai main.</p>
+          <h2>${escapeHtml(contoh.childText)}</h2>
         </div>
 
-        <div class="vacs-opts" role="radiogroup" aria-label="${escapeHtml(contoh.childText)}">
-          ${contoh.emoji.map((e, i) => `
-            <button type="button" class="vacs-opt" role="radio" aria-checked="false"
-                    data-v="${i + 1}" aria-label="${escapeHtml(contoh.anchors[i])}">
-              <span class="vacs-emoji" aria-hidden="true">${e}</span>
-              <span class="vacs-anchor">${escapeHtml(contoh.anchors[i])}</span>
-            </button>`).join('')}
-        </div>
+        ${skala(contoh, picked)}
 
-        <div class="card center" id="t-fb" style="${picked ? '' : 'display:none'}">
-          <p style="font-weight:600;color:var(--ok)">✅ Nah, seperti itu! Gampang, kan?</p>
-        </div>
+        ${picked ? `
+          <div class="card center rayakan">
+            <p style="font-weight:800;color:var(--benar-tua);font-size:19px">Nah, seperti itu! Gampang, kan?</p>
+          </div>` : ''}
 
-        <button class="btn btn-primary" id="t-go" ${picked ? '' : 'disabled style="opacity:.5"'}>
-          Aku siap, ayo mulai! →
-        </button>
-      </div>`;
+        <button class="btn btn-primary" id="t-go" ${picked ? '' : 'disabled'}>
+          ${picked ? 'Aku siap, ayo mulai! →' : 'Pilih satu gambar dulu'}
+        </button>`,
+        { kelas: 'tengah' });
 
     app.querySelector('.vacs-opts').addEventListener('click', (ev) => {
       const btn = ev.target.closest('button[data-v]');
       if (!btn) return;
       picked = Number(btn.dataset.v);
-      draw();
+      berlatih();
     });
     app.querySelector('#t-go').addEventListener('click', () => { if (picked) onDone(); });
   }
 
-  draw();
+  const gambar = () => (langkah === 0 ? jelaskan() : berlatih());
+  gambar();
 }
-
-const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) =>
-  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

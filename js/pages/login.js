@@ -7,9 +7,23 @@
 //          menunjuk kolom mana. Kini tiap kolom punya pesannya sendiri di bawahnya.
 //  §7.7  — label "Perempuan" terlipat dua baris sehingga kedua kartu beda tinggi.
 //          Kini grid dengan min-height seragam.
+//
+// Rombakan rupa v3.9 — SATU perubahan susunan, dan alasannya bukan selera.
+//
+// Layar ini menyapa anak ("Kenalan dulu, yuk!") lalu langsung menyodorkan enam kolom
+// berderet, empat di antaranya bertanda "— diisi pendamping". Bagian milik anak — nama
+// panggilan dan laki-laki/perempuan — terselip di antara nomor peserta, nama sekolah, dan
+// kelas. Anak yang membacanya melihat formulir orang dewasa yang kebetulan menyebut
+// namanya, dan kesan pertama itu berlaku untuk 25 menit berikutnya.
+//
+// Sekarang keduanya dipisah menjadi dua panel: satu miliknya, satu milik pendamping.
+// Kolomnya sama persis, urutan datanya sama persis, validasinya sama persis — yang
+// berubah hanya siapa yang jelas sedang diajak bicara.
 
 import { KONDISI } from '../config.js';
 import { Store } from '../store.js';
+import { bilah, layar } from '../components/ui.js';
+import { sapaan } from '../components/maskot.js';
 
 const KELAS = ['3', '4', '5', '6'];
 const GENDER = [
@@ -20,15 +34,13 @@ const GENDER = [
 export function renderLogin(app, { onDone }) {
   const draft = { nama: '', id: '', kelas: '', sekolah: '', gender: '', kondisi: '' };
 
-  app.innerHTML = `
-    <div class="topbar">
-      <span style="font-size:22px" aria-hidden="true">🧠</span>
-      <h1>CognoKids Explorer</h1>
-    </div>
-    <div class="screen">
+  app.innerHTML =
+    bilah({ emoji: '🦉', judul: 'CognoKids Explorer' }) +
+    layar(`
+      ${sapaan('sapa', 'Halo! Aku <b>Puti</b>.<br>Kita main bareng, ya.')}
+
       <div class="card">
-        <h2>Kenalan dulu, yuk!</h2>
-        <p class="muted" style="margin:6px 0 16px">Isi dulu ya, biar kami kenal kamu.</p>
+        <div class="panel-judul"><span aria-hidden="true">✏️</span> Tentang kamu</div>
 
         <div class="field">
           <label for="f-nama">Nama panggilan</label>
@@ -36,29 +48,8 @@ export function renderLogin(app, { onDone }) {
           <div class="err" id="e-nama"></div>
         </div>
 
-        <div class="field">
-          <label for="f-id">Nomor / kode peserta <span style="font-weight:500;color:var(--ink-3)">— diisi pendamping</span></label>
-          <input id="f-id" autocomplete="off" inputmode="text" placeholder="Contoh: S1-014">
-          <div class="err" id="e-id"></div>
-        </div>
-
-        <div class="field">
-          <label for="f-sekolah">Sekolah <span style="font-weight:500;color:var(--ink-3)">— diisi pendamping</span></label>
-          <input id="f-sekolah" autocomplete="off" placeholder="Nama sekolah">
-          <div class="err" id="e-sekolah"></div>
-        </div>
-
-        <div class="field">
-          <label for="f-kelas">Kelas <span style="font-weight:500;color:var(--ink-3)">— diisi pendamping</span></label>
-          <select id="f-kelas">
-            <option value="">— pilih kelas —</option>
-            ${KELAS.map((k) => `<option value="${k}">Kelas ${k}</option>`).join('')}
-          </select>
-          <div class="err" id="e-kelas"></div>
-        </div>
-
-        <div class="field">
-          <span class="label" id="l-gender" style="display:block;font-size:14px;font-weight:600;margin-bottom:6px">Kamu laki-laki atau perempuan?</span>
+        <div class="field" style="margin-bottom:0">
+          <span class="label" id="l-gender">Kamu laki-laki atau perempuan?</span>
           <div class="choice cols-2" role="group" aria-labelledby="l-gender" id="g-gender">
             ${GENDER.map((g) => `
               <button type="button" data-val="${g.id}" aria-pressed="false">
@@ -70,21 +61,45 @@ export function renderLogin(app, { onDone }) {
         </div>
       </div>
 
-      <div class="card">
-        <span class="label" id="l-kondisi" style="display:block;font-size:14px;font-weight:600;margin-bottom:2px">Waktu pengukuran</span>
-        <p class="muted" style="font-size:13.5px;margin-bottom:10px">Diisi pendamping. Dipakai untuk mencocokkan dengan data lingkungan kelas.</p>
-        <div class="choice cols-3" role="group" aria-labelledby="l-kondisi" id="g-kondisi">
-          ${KONDISI.map((k) => `
-            <button type="button" data-val="${k.id}" aria-pressed="false">
-              <span>${k.label}</span>
-              <span class="hint">${k.jam}</span>
-            </button>`).join('')}
+      <div class="card panel-pendamping">
+        <div class="panel-judul"><span aria-hidden="true">📋</span> Diisi pendamping</div>
+
+        <div class="field">
+          <label for="f-id">Nomor / kode peserta</label>
+          <input id="f-id" autocomplete="off" inputmode="text" placeholder="Contoh: S1-014">
+          <div class="err" id="e-id"></div>
         </div>
-        <div class="err" id="e-kondisi"></div>
+
+        <div class="field">
+          <label for="f-sekolah">Sekolah</label>
+          <input id="f-sekolah" autocomplete="off" placeholder="Nama sekolah">
+          <div class="err" id="e-sekolah"></div>
+        </div>
+
+        <div class="field">
+          <label for="f-kelas">Kelas</label>
+          <select id="f-kelas">
+            <option value="">— pilih kelas —</option>
+            ${KELAS.map((k) => `<option value="${k}">Kelas ${k}</option>`).join('')}
+          </select>
+          <div class="err" id="e-kelas"></div>
+        </div>
+
+        <div class="field" style="margin-bottom:0">
+          <span class="label" id="l-kondisi">Waktu pengukuran</span>
+          <p class="kecil" style="margin:-2px 0 9px">Dipakai untuk mencocokkan dengan data lingkungan kelas.</p>
+          <div class="choice cols-3" role="group" aria-labelledby="l-kondisi" id="g-kondisi">
+            ${KONDISI.map((k) => `
+              <button type="button" data-val="${k.id}" aria-pressed="false">
+                <span>${k.label}</span>
+                <span class="hint">${k.jam}</span>
+              </button>`).join('')}
+          </div>
+          <div class="err" id="e-kondisi"></div>
+        </div>
       </div>
 
-      <button class="btn btn-primary" id="f-mulai">Mulai Petualangan →</button>
-    </div>`;
+      <button class="btn btn-primary" id="f-mulai">Mulai Petualangan →</button>`);
 
   // ── Kelompok pilihan ──
   const wireGroup = (containerId, key) => {
@@ -121,12 +136,14 @@ export function renderLogin(app, { onDone }) {
 
   app.querySelector('#f-mulai').addEventListener('click', () => {
     // Pesan menunjuk kolom yang kosong — bukan satu pesan umum di bawah layar (§4.5).
+    // Urutannya mengikuti urutan KOLOM DI LAYAR, supaya kolom pertama yang digulir
+    // menuju pandangan benar-benar yang paling atas di antara yang kosong.
     const wajib = [
       ['nama', 'Nama panggilan belum diisi.'],
+      ['gender', 'Jenis kelamin belum dipilih.'],
       ['id', 'Nomor atau kode peserta belum diisi.'],
       ['sekolah', 'Nama sekolah belum diisi.'],
       ['kelas', 'Kelas belum dipilih.'],
-      ['gender', 'Jenis kelamin belum dipilih.'],
       ['kondisi', 'Waktu pengukuran belum dipilih.'],
     ];
     let first = null;
@@ -148,22 +165,18 @@ export function renderLogin(app, { onDone }) {
 export function renderResume(app, { onResume, onRestart }) {
   const s = Store.get();
   const selesai = Object.keys(s.games).length;
-  app.innerHTML = `
-    <div class="topbar"><span style="font-size:22px" aria-hidden="true">🧠</span><h1>Lanjutkan permainan?</h1></div>
-    <div class="screen">
+  app.innerHTML =
+    bilah({ emoji: '🦉', judul: 'Lanjutkan permainan?' }) +
+    layar(`
+      ${sapaan('sapa', `Halo lagi, <b>${escapeHtml(s.participant?.nama ?? '')}</b>!<br>
+        Permainanmu tadi belum selesai.`)}
       <div class="card center">
-        <div style="font-size:46px" aria-hidden="true">👋</div>
-        <h2 style="margin-top:8px">Halo lagi, ${escapeHtml(s.participant?.nama ?? '')}!</h2>
-        <p class="muted" style="margin-top:8px">
-          Permainanmu tadi belum selesai.<br>
-          Kamu sudah main <b>${selesai} dari ${s.gameOrder.length}</b> permainan.
-        </p>
-        <div style="margin-top:16px;display:grid;gap:10px">
+        <p class="muted">Kamu sudah main <b>${selesai} dari ${s.gameOrder.length}</b> permainan.</p>
+        <div style="margin-top:16px;display:grid;gap:11px">
           <button class="btn btn-primary" id="r-lanjut">Lanjutkan permainannya</button>
           <button class="btn btn-ghost" id="r-ulang">Mulai peserta baru</button>
         </div>
-      </div>
-    </div>`;
+      </div>`);
   app.querySelector('#r-lanjut').addEventListener('click', onResume);
   app.querySelector('#r-ulang').addEventListener('click', () => {
     if (confirm('Data peserta sebelumnya yang belum selesai akan dihapus. Lanjutkan?')) onRestart();

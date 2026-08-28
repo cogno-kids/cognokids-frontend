@@ -13,7 +13,7 @@
 
 export const APP = {
   name: 'CognoKids Explorer',
-  version: '3.8.0',
+  version: '3.9.0',
   schema: 3,          // versi skema data; ikut di setiap baris ekspor
   storageKey: 'cognokids_v3',
   queueKey: 'cognokids_queue_v1',
@@ -122,6 +122,27 @@ export const DIMENSIONS = [
   { id: 'EK4', name: 'Keleluasaan Aktivitas', direction: 'higher_better', items: ['V3'] },
 ];
 
+// ── Warna tiap permainan ─────────────────────────────────────────────────────
+// Sampai v3.8 keempat permainan tampil dengan bilah indigo yang sama persis; satu-satunya
+// pembeda adalah emoji kecil di pojok. Anak tidak merasa berpindah ke mana pun. `warna`
+// membuat perpindahan itu TERLIHAT sebelum sebaris pun dibaca.
+//
+// Empat bidang tiap warna, dan tiap pasangan sudah DIHITUNG rasio kontrasnya, bukan
+// dikira-kira:
+//   g       bidang berwarna (medali, pita panel, tombol, bilah kemajuan)
+//   teks    warna teks DI ATAS `g` — jingga memakai coklat gelap, karena putih di atas
+//           jingga hanya 2,8:1 dan tidak lulus WCAG AA
+//   tua     bibir bawah tombol, dan teks berwarna di atas latar putih atau `terang`
+//   terang  latar lembut (bidang terpilih, badge, kartu fase mengingat)
+// Nilai terendah di seluruh tabel ini 4,53:1 — di atas ambang AA teks biasa (4,5:1).
+// Dijaga test/tampilan.test.mjs, yang menghitung ulang setiap rasio saat uji dijalankan.
+export const WARNA_GAME = {
+  mm: { g: '#7B5CF0', tua: '#5B3FC4', terang: '#EDE7FF', teks: '#FFFFFF' },  // ungu
+  ft: { g: '#197BBC', tua: '#12597F', terang: '#DCEEFB', teks: '#FFFFFF' },  // biru
+  pe: { g: '#F2761B', tua: '#A2490D', terang: '#FFE8D5', teks: '#4A2404' },  // jingga
+  mv: { g: '#0E8662', tua: '#0A6449', terang: '#D8F5EA', teks: '#FFFFFF' },  // hijau
+};
+
 // ── Mini-game ────────────────────────────────────────────────────────────────
 // `childName` dipakai di layar anak — Bahasa Indonesia, dan menyebut apa yang benar-benar
 // dikerjakan. Nama lamanya (Memory Maze, Focus Tower, Puzzle Emosi, Move & Match) tiga di
@@ -132,20 +153,20 @@ export const DIMENSIONS = [
 // Urutan larik ini adalah urutan baku sesuai proposal Tabel 3.6.
 export const GAMES = [
   {
-    id: 'mm', childName: 'Ingat Gambar', emoji: '🧩', ek: 'EK2', tlx: 'Mental Demand, Effort',
+    id: 'mm', warna: WARNA_GAME.mm, childName: 'Ingat Gambar', emoji: '🧩', ek: 'EK2', tlx: 'Mental Demand, Effort',
     intro: 'Ingat gambarnya. Nanti kamu cari di antara gambar lain!',
     // Tabel 3.6: 2 babak, 3 → 4 gambar, waktu mengingat 8 dan 6 detik.
     // v2.1 memakai 5 gambar di babak 2 — menyimpang dari naskah (cacat MM-4).
     rounds: [{ targets: 3, showMs: 8000, options: 6 }, { targets: 4, showMs: 6000, options: 8 }],
   },
   {
-    id: 'ft', childName: 'Cocokkan Bentuk', emoji: '🏗️', ek: 'EK3', tlx: 'Temporal Demand',
+    id: 'ft', warna: WARNA_GAME.ft, childName: 'Cocokkan Bentuk', emoji: '🏗️', ek: 'EK3', tlx: 'Temporal Demand',
     intro: 'Ketuk bentuk yang sama dengan balok!',
     targetScore: 8,
     distractorFromScore: 3,   // distraktor mulai muncul setelah skor ini
   },
   {
-    id: 'pe', childName: 'Susun Angka', emoji: '🧸', ek: 'EK1', tlx: 'Frustration, Performance',
+    id: 'pe', warna: WARNA_GAME.pe, childName: 'Susun Angka', emoji: '🧸', ek: 'EK1', tlx: 'Frustration, Performance',
     intro: 'Geser kotaknya. Urutkan angka 1 sampai 8!',
     // Keputusan D3: 90 detik untuk KEDUA babak (v2.1 memberi 90 lalu 75 — tidak sebanding).
     rounds: 2,
@@ -153,7 +174,7 @@ export const GAMES = [
     stressCooldownMs: 10000,  // cacat 4.4: v2.1 tanpa jeda dan memperlihatkan pencacahnya
   },
   {
-    id: 'mv', childName: 'Cari Pasangan', emoji: '🃏', ek: 'EK4', tlx: 'Physical Demand',
+    id: 'mv', warna: WARNA_GAME.mv, childName: 'Cari Pasangan', emoji: '🃏', ek: 'EK4', tlx: 'Physical Demand',
     intro: 'Geser kartu ke kartu yang sama!',
     // Tabel 2.2 mendeklarasikan data objektif "jumlah sentuhan & gerakan layar".
     // v2.1 tak pernah mencatatnya. v3 memakai mekanik SERET agar tuntutan fisiknya nyata
