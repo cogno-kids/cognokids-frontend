@@ -12,6 +12,7 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { join, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -96,11 +97,46 @@ describe('Cangkang offline', () => {
     }
   });
 
-  test('versi cache dinaikkan bersama versi aplikasi', () => {
+  test('versi cache, package.json, dan config.js seragam', () => {
     const cache = sw.match(/const CACHE = '([^']+)'/)[1];
     const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
+    const cfg = readFileSync(join(root, 'js/config.js'), 'utf8').match(/version: '([^']+)'/)[1];
     assert.ok(cache.includes(pkg.version),
       `CACHE "${cache}" tidak memuat versi ${pkg.version} — peramban akan menyajikan berkas lama.`);
+    assert.equal(cfg, pkg.version, 'versi di config.js berbeda dari package.json');
+  });
+
+  // Penjaga terpenting di berkas ini.
+  //
+  // Service worker memakai strategi cache-first. Selama nama CACHE tidak berubah, peramban
+  // yang SUDAH pernah membuka situs akan selamanya menyajikan berkas lama — perbaikan yang
+  // di-deploy tidak akan pernah sampai ke perangkat lapangan yang sudah dipakai.
+  //
+  // Ini pernah terjadi dan tidak ketahuan: delapan commit mengubah isi, nama cache tetap
+  // v3.0.0, dan setiap laporan "sudah tayang" keliru bagi pengunjung lama.
+  test('isi SHELL tidak berubah tanpa versi ikut naik', () => {
+    const rekam = JSON.parse(readFileSync(join(root, 'test/shell-hash.json'), 'utf8'));
+    const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
+
+    const h = createHash('sha256');
+    for (const p of [...SHELL].sort()) {
+      if (p === '') continue;
+      h.update(p);
+      h.update(readFileSync(join(root, p)));
+    }
+    const sekarang = h.digest('hex');
+
+    if (sekarang === rekam.sha256) return;   // isi tidak berubah
+
+    assert.notEqual(pkg.version, rekam.version,
+      `Isi berkas SHELL berubah tetapi versi masih ${pkg.version}. Peramban yang sudah ` +
+      'pernah membuka situs TIDAK akan menerima perubahan ini.\n' +
+      '  1. Naikkan versi di package.json, js/config.js, dan sw.js\n' +
+      `  2. Perbarui test/shell-hash.json → { "version": "<baru>", "sha256": "${sekarang}" }`);
+
+    assert.fail(
+      `Versi sudah naik ke ${pkg.version}, tinggal perbarui test/shell-hash.json:\n` +
+      `  { "version": "${pkg.version}", "sha256": "${sekarang}" }`);
   });
 
   test('viewport tidak mematikan cubit-perbesar (regresi cacat §7.5)', () => {

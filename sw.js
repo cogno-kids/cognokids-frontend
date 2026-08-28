@@ -3,9 +3,17 @@
 // halaman pertama dibuka, aplikasinya tidak termuat sama sekali. Antrean offline hanya
 // berguna kalau halamannya sudah lebih dulu tersimpan.
 //
-// Naikkan CACHE saat berkas mana pun berubah — nama lama otomatis dibersihkan saat activate.
+// WAJIB: naikkan CACHE setiap kali ISI berkas mana pun berubah.
+//
+// Strategi di bawah adalah cache-first. Selama nama CACHE tidak berubah, peramban yang
+// sudah pernah membuka situs ini akan SELAMANYA menyajikan berkas lama — perbaikan
+// apa pun yang di-deploy tidak akan pernah sampai ke perangkat lapangan yang sudah
+// dipakai. Ini pernah terjadi: delapan kali isi diubah, nama cache tetap v3.0.0.
+//
+// test/offline.test.mjs sekarang menghitung sidik jari seluruh berkas SHELL dan gagal
+// bila isinya berubah tanpa versi ikut naik, jadi ini tidak bisa terlupa lagi.
 
-const CACHE = 'cognokids-v3.0.0';
+const CACHE = 'cognokids-v3.1.0';
 
 const SHELL = [
   './',
