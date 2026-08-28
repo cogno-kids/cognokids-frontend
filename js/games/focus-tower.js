@@ -36,14 +36,19 @@ export const JENIS = [
 ];
 
 /** SVG inline — tanpa dependensi, tampil identik di semua perangkat (tidak seperti emoji). */
-export function svgBentuk(id, warna, size = 44) {
+export function svgBentuk(id, warna, size = 44, { diberiLabel = true } = {}) {
   const p = {
     bulat: '<circle cx="24" cy="24" r="19"/>',
     segitiga: '<path d="M24 5 L44 40 L4 40 Z"/>',
     bintang: '<path d="M24 4 L29.6 18.4 L45 19.6 L33.2 29.6 L36.9 44 L24 36 L11.1 44 L14.8 29.6 L3 19.6 L18.4 18.4 Z"/>',
   }[id];
+  // Di dalam tombol yang sudah punya aria-label sendiri, SVG-nya harus disembunyikan —
+  // kalau tidak, pembaca layar menyebutkan bendanya dua kali.
+  const aksesibilitas = diberiLabel
+    ? `role="img" aria-label="${id}"`
+    : 'aria-hidden="true"';
   return `<svg viewBox="0 0 48 48" width="${size}" height="${size}" fill="${warna}"
-            role="img" aria-label="${id}" focusable="false">${p}</svg>`;
+            ${aksesibilitas} focusable="false">${p}</svg>`;
 }
 
 /** Urutan balok. MURNI — rng disuntikkan. Tidak pernah mengulang jenis yang sama 3× beruntun. */
@@ -106,13 +111,13 @@ export function mountFocusTower(app, { game, onTrial, onFinish }) {
         ${distraktorTampil() ? `
           <div class="ft-palsu" aria-hidden="true">
             ${shuffle(JENIS).slice(0, 3).map((j) => `
-              <div class="ft-wadah palsu">${svgBentuk(j.id, j.warna, 34)}</div>`).join('')}
+              <div class="ft-wadah palsu">${svgBentuk(j.id, j.warna, 34, { diberiLabel: false })}</div>`).join('')}
           </div>` : ''}
 
         <div class="ft-wadah-baris" id="ft-wadah" role="group" aria-label="Pilih bentuk yang sama dengan balok">
           ${wadah.map((j) => `
-            <button type="button" class="ft-wadah" data-id="${j.id}" aria-label="Tempat ${j.nama}">
-              ${svgBentuk(j.id, j.warna, 40)}
+            <button type="button" class="ft-wadah" data-id="${j.id}" aria-label="Bentuk ${j.nama}">
+              ${svgBentuk(j.id, j.warna, 40, { diberiLabel: false })}
             </button>`).join('')}
         </div>
       </div>`;

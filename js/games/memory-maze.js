@@ -61,8 +61,8 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
         <div style="font-size:52px" aria-hidden="true">${game.emoji}</div>
         <h2 style="margin-top:8px">Babak ${ri + 1} dari ${game.rounds.length}</h2>
         <p class="muted" style="margin-top:10px">
-          Akan muncul <b>${c.targets} gambar</b>.<br>
-          Gambarnya cuma muncul <b>${Math.round(c.showMs / 1000)} detik</b>!
+          Sebentar lagi muncul <b>${c.targets} gambar</b>.<br>
+          Lihatnya cuma <b>${Math.round(c.showMs / 1000)} detik</b> ya!
         </p>
       </div>
       <button class="btn btn-primary" id="mm-go">Aku siap! →</button>`);
@@ -119,10 +119,10 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
           <span id="mm-count" style="color:var(--indigo);font-weight:700">Dipilih 0 dari ${c.targets} gambar</span>
         </p>
       </div>
-      <div class="emoji-grid" style="--cols:4" id="mm-opts" role="group" aria-label="Pilih gambar yang tadi muncul">
+      <div class="emoji-grid" style="--cols:4" id="mm-opts" role="group" aria-label="Pilih gambar yang tadi kamu ingat">
         ${round.options.map((e, i) => `
           <button type="button" class="emoji-card pick" data-i="${i}" aria-pressed="false"
-                  aria-label="Gambar ${i + 1}">${e}</button>`).join('')}
+                  >${e}</button>`).join('')}
       </div>
       <button class="btn btn-primary" id="mm-done" disabled style="opacity:.5">Selesai</button>`);
 

@@ -121,7 +121,7 @@ export function renderVACSTraining(app, { onDone }) {
           <h2 style="margin-top:10px;line-height:1.35">${escapeHtml(contoh.childText)}</h2>
         </div>
 
-        <div class="vacs-opts" role="radiogroup" aria-label="Contoh latihan">
+        <div class="vacs-opts" role="radiogroup" aria-label="${escapeHtml(contoh.childText)}">
           ${contoh.emoji.map((e, i) => `
             <button type="button" class="vacs-opt" role="radio" aria-checked="false"
                     data-v="${i + 1}" aria-label="${escapeHtml(contoh.anchors[i])}">
