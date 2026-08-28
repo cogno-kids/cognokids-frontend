@@ -92,7 +92,6 @@ export function mountFocusTower(app, { game, onTrial, onFinish }) {
       <div class="progress"><i style="width:${(score / target) * 100}%"></i></div>
 
       <div class="screen ft-screen">
-        <!-- Instruksi berada di alirannya sendiri. Tidak ada overlay yang bisa menimpanya. -->
         <div class="card center ft-instruksi">
           <h3>Ketuk tempat yang <b>SAMA</b> dengan balok!</h3>
           <p class="muted" style="margin-top:4px;font-size:13.5px">Cepat ya, baloknya turun terus 👇</p>

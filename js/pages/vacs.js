@@ -28,11 +28,15 @@ export function renderVACS(app, { gameName, gameEmoji, onDone }) {
   function draw() {
     const item = VACS_ITEMS[q];
     // Perhatikan: item.tlx dan item.ek TIDAK dirender. Itu disengaja.
+    //
+    // Judul di bilah atas sengaja BUKAN kalimat tanya. Di bawahnya sudah ada pertanyaan
+    // sungguhan, dan anak yang melihat dua kalimat tanya bertumpuk tidak tahu yang mana
+    // harus dijawab.
     app.innerHTML = `
       <div class="topbar">
         <span style="font-size:22px" aria-hidden="true">${gameEmoji}</span>
         <div style="flex:1">
-          <h1>Bagaimana rasanya tadi?</h1>
+          <h1>Cerita sedikit, yuk</h1>
           <div class="sub">Setelah bermain ${escapeHtml(gameName)}</div>
         </div>
       </div>
@@ -68,8 +72,11 @@ export function renderVACS(app, { gameName, gameEmoji, onDone }) {
       rts[q] = Date.now() - shownAt;
       app.querySelectorAll('.vacs-opt').forEach((b) =>
         b.setAttribute('aria-checked', String(b === btn)));
-      // Jeda pendek supaya anak melihat pilihannya tercatat sebelum layar berganti.
-      setTimeout(next, 260);
+      // 260 ms terlalu cepat: anak kelas 3 yang salah tekan belum sempat melihat
+      // pilihannya menyala sebelum layar berganti, sehingga salah tekan langsung
+      // menjadi data. 700 ms cukup untuk melihat dan menyadari, tanpa terasa lambat
+      // ketika dikalikan 24 pertanyaan.
+      setTimeout(next, 700);
     });
 
     app.querySelector('#v-back')?.addEventListener('click', () => {
@@ -94,6 +101,9 @@ export function renderVACSTraining(app, { onDone }) {
   let picked = null;
 
   function draw() {
+    // Teksnya berbunyi "pilih gambar", BUKAN "pilih gambar wajah": V3 memakai
+    // 🪑🤏👋🤸🏃 — kursi dan orang berlari, tidak satu pun wajah. Anak yang disuruh
+    // mencari wajah akan bingung ketika pertanyaan itu muncul.
     app.innerHTML = `
       <div class="topbar"><span style="font-size:22px" aria-hidden="true">💡</span><h1>Latihan dulu</h1></div>
       <div class="screen">
@@ -101,7 +111,7 @@ export function renderVACSTraining(app, { onDone }) {
           <h2>Sebentar lagi kamu akan ditanya</h2>
           <p class="muted" style="margin-top:8px">
             Setiap selesai bermain, akan muncul beberapa pertanyaan tentang <b>perasaanmu</b>.
-            Pilih gambar wajah yang paling cocok. Tidak ada jawaban benar atau salah,
+            Pilih gambar yang paling cocok. Tidak ada jawaban benar atau salah,
             dan tidak ada yang dinilai. 💙
           </p>
         </div>

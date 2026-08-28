@@ -5,9 +5,11 @@
 // modul skoring, ekspor, dan mode peneliti. Tidak boleh ada satu pun string "EK1".."EK4"
 // yang sampai ke DOM layar anak — itu memicu demand characteristics.
 //
-// Pemetaan di bawah ini mengikuti proposal disertasi §2.1.5 Tabel 2.2 dan §3 Tabel 3.6.
-// Jangan ubah tanpa memperbarui naskah metode: setiap perubahan di sini menggeser makna
-// data yang sudah terkumpul.
+// PEMETAAN dimensi (item → EK, game → EK) mengikuti proposal §2.1.5 Tabel 2.2 dan §3
+// Tabel 3.6, dan tidak boleh diubah tanpa memperbarui naskah metode.
+//
+// BUNYI ITEM berbeda: V2, V4, dan V6 ditulis ulang agar layak untuk anak kelas 3 —
+// alasannya di blok komentar VACS_ITEMS di bawah. Yang diukur tetap sama.
 
 export const APP = {
   name: 'CognoKids Explorer',
@@ -76,7 +78,9 @@ export const VACS_ITEMS = [
     id: 'V4', tlx: 'Performance', ek: 'EK1', reversed: true,
     childText: 'Seberapa bagus kamu main tadi?',
     emoji: ['😔', '😕', '😊', '😄', '🏆'],
-    anchors: ['Belum bagus', 'Kurang', 'Lumayan', 'Bagus', 'Bagus sekali'],
+    // "Kurang" sendirian menggantung — kurang apa? Setiap titik harus menyebut hal yang
+    // sama dengan pertanyaannya, supaya arah skalanya terbaca dari katanya sendiri.
+    anchors: ['Belum bagus', 'Kurang bagus', 'Lumayan', 'Bagus', 'Bagus sekali'],
   },
   {
     id: 'V5', tlx: 'Effort', ek: 'EK2', reversed: false,
@@ -88,7 +92,10 @@ export const VACS_ITEMS = [
     id: 'V6', tlx: 'Frustration', ek: 'EK1', reversed: false,
     childText: 'Seberapa kesal kamu tadi?',
     emoji: ['😊', '🙂', '😐', '😟', '😤'],
-    anchors: ['Tidak kesal', 'Sedikit', 'Biasa', 'Kesal', 'Kesal sekali'],
+    // "Biasa" tidak boleh dipakai di sini. Skala ini berjalan dari satu kutub saja
+    // (tidak kesal → sangat kesal), sedangkan "Biasa" adalah titik tengah antara DUA
+    // kutub berlawanan — ia hanya masuk akal pada V2 (santai ↔ buru-buru).
+    anchors: ['Tidak kesal', 'Sedikit', 'Lumayan', 'Kesal', 'Kesal sekali'],
   },
 ];
 
