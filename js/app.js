@@ -151,17 +151,14 @@ function renderEngineHilang(app, game) {
   app.innerHTML = `
     <div class="topbar" style="background:var(--bad)">
       <span style="font-size:22px" aria-hidden="true">⚠️</span>
-      <div style="flex:1"><h1>Aplikasi bermasalah</h1></div>
+      <div style="flex:1"><h1>Aduh, ada yang rusak</h1></div>
     </div>
     <div class="screen">
       <div class="card center">
         <div style="font-size:46px" aria-hidden="true">🛠️</div>
-        <h2 style="margin-top:8px">Permainan tidak dapat dimuat</h2>
+        <h2 style="margin-top:8px">Permainannya tidak bisa dibuka</h2>
         <p class="muted" style="margin-top:10px">
-          Mohon panggil pendamping. Jangan lanjutkan sesi ini.
-        </p>
-        <p class="muted" style="margin-top:12px;font-size:12.5px">
-          Rujukan teknis: engine "${escapeHtml(game.id)}" tidak terdaftar.
+          Bukan salahmu, ya. Panggil Bapak/Ibu dulu.
         </p>
       </div>
     </div>`;

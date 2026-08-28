@@ -8,8 +8,8 @@
 // PEMETAAN dimensi (item → EK, game → EK) mengikuti proposal §2.1.5 Tabel 2.2 dan §3
 // Tabel 3.6, dan tidak boleh diubah tanpa memperbarui naskah metode.
 //
-// BUNYI ITEM berbeda: V2, V4, dan V6 ditulis ulang agar layak untuk anak kelas 3 —
-// alasannya di blok komentar VACS_ITEMS di bawah. Yang diukur tetap sama.
+// BUNYI ITEM ditulis ulang seluruhnya agar layak untuk anak kelas 3 — lihat blok
+// komentar VACS_ITEMS di bawah. Yang diukur tetap sama.
 
 export const APP = {
   name: 'CognoKids Explorer',
@@ -35,48 +35,58 @@ export const KONDISI = [
 // ── Item VACS ────────────────────────────────────────────────────────────────
 // `tlx` dan `ek` adalah label riset — tidak pernah dirender di layar anak.
 //
-// Bunyi V2, V4, dan V6 BERBEDA dari Tabel 3.6 proposal, dan itu disengaja. Bunyi lama
-// tidak layak untuk anak kelas 3 (usia 8–9):
+// BENTUK PERTANYAAN. Keenam item memakai satu pola: "Tadi kamu ...?" — kalimat tanya
+// biasa, 4–5 kata, konteks waktu di DEPAN.
 //
-//   V2  "Seberapa terburu-buru atau panik kamu tadi?"
-//       Dua hal ditanyakan sekaligus. Anak yang buru-buru tapi tidak panik tidak punya
-//       jawaban yang benar — ia tetap memilih sesuatu, dan pilihan itu masuk ke data
-//       tanpa penanda bahwa itu kompromi. "Panik" juga serapan yang belum tentu dikenal.
+// Bunyi lama memakai pola "Seberapa ... kamu tadi?". Itu keliru untuk anak 8–9 tahun,
+// bukan karena katanya sulit, melainkan karena bentuknya:
 //
-//   V4  "Kamu merasa berhasil atau gagal tadi?"
-//       Pilihan dua kutub yang dipasang di skala lima titik: anak diminta memilih antara
-//       "berhasil" dan "gagal", tetapi harus menjawabnya pada lima tingkat yang titik
-//       tengahnya tidak jelas berarti apa. "Gagal" juga keras untuk anak yang baru saja
-//       diberi tahu tidak ada yang dinilai.
+//   • "Seberapa" adalah kata tanya DERAJAT. Ia meminta anak mengukur keadaan batinnya
+//     sendiri lalu menaruhnya pada suatu skala — dua langkah berpikir sekaligus, sebelum
+//     ia sempat melihat pilihan jawabannya. Padahal skala emoji di bawahnya memang sudah
+//     bertugas menyediakan derajat itu; stem-nya tidak perlu ikut memintanya.
 //
-//   V6  "Apakah kamu merasa stres, kesal, atau tidak nyaman tadi?"
-//       Tiga hal sekaligus, dan "stres" serapan.
+//   • Orang Indonesia tidak bertanya begitu kepada anak kecil. Yang alami adalah
+//     "Tadi capek, nggak?", bukan "Seberapa capek kamu tadi?".
 //
-// Yang diukur tidak berubah — dimensi NASA-TLX tiap item tetap sama, arah skalanya tetap
-// sama, dan `reversed` pada V4 tetap benar karena "seberapa bagus" naik searah keberhasilan.
-// Yang berubah hanya jumlah hal yang ditanyakan per item (jadi satu) dan pilihan katanya.
+//   • "tadi" di UJUNG kalimat membuat konteks waktunya baru tiba setelah seluruh kalimat
+//     selesai dibaca. Anak yang membaca pelan sudah menafsirkan pertanyaannya sebagai
+//     "sekarang" sebelum sampai ke kata terakhir.
+//
+//   • "harus" pada "harus berpikir keras" menambah modal keharusan yang abstrak.
+//
+// Bunyi lama juga menanyakan lebih dari satu hal pada V2 ("terburu-buru ATAU panik") dan
+// V6 ("stres, kesal, ATAU tidak nyaman"), dan memakai serapan "panik" serta "stres".
+//
+// LABEL SKALA memakai tangga yang sama di lima dari enam item —
+// Tidak · Sedikit · Lumayan · <kata dari pertanyaan> · <kata> sekali — supaya anak cukup
+// memahaminya sekali, lalu mengenalinya 23 kali berikutnya. V4 keluar dari pola itu karena
+// ia menilai mutu, bukan intensitas.
+//
+// Yang DIUKUR tidak berubah: dimensi NASA-TLX tiap item tetap, arah skala tetap, dan
+// `reversed` pada V4 tetap benar karena "bagus" naik searah keberhasilan.
 export const VACS_ITEMS = [
   {
     id: 'V1', tlx: 'Mental Demand', ek: 'EK2', reversed: false,
-    childText: 'Seberapa banyak kamu harus berpikir keras tadi?',
+    childText: 'Tadi kamu harus berpikir keras?',
     emoji: ['😴', '🙂', '😐', '😓', '🤯'],
-    anchors: ['Tidak sama sekali', 'Sedikit', 'Lumayan', 'Banyak', 'Banyak sekali'],
+    anchors: ['Tidak', 'Sedikit', 'Lumayan', 'Keras', 'Keras sekali'],
   },
   {
     id: 'V2', tlx: 'Temporal Demand', ek: 'EK3', reversed: false,
-    childText: 'Seberapa buru-buru kamu tadi?',
+    childText: 'Tadi kamu merasa buru-buru?',
     emoji: ['😌', '🙂', '😬', '😰', '😱'],
-    anchors: ['Santai sekali', 'Santai', 'Biasa', 'Buru-buru', 'Buru-buru sekali'],
+    anchors: ['Tidak', 'Sedikit', 'Lumayan', 'Buru-buru', 'Buru-buru sekali'],
   },
   {
     id: 'V3', tlx: 'Physical Demand', ek: 'EK4', reversed: false,
-    childText: 'Seberapa banyak kamu harus bergerak-gerak tadi?',
+    childText: 'Tadi kamu banyak bergerak?',
     emoji: ['🪑', '🤏', '👋', '🤸', '🏃'],
-    anchors: ['Diam saja', 'Sedikit', 'Lumayan', 'Banyak', 'Banyak sekali'],
+    anchors: ['Tidak', 'Sedikit', 'Lumayan', 'Banyak', 'Banyak sekali'],
   },
   {
     id: 'V4', tlx: 'Performance', ek: 'EK1', reversed: true,
-    childText: 'Seberapa bagus kamu main tadi?',
+    childText: 'Menurutmu, tadi mainmu bagus?',
     emoji: ['😔', '😕', '😊', '😄', '🏆'],
     // "Kurang" sendirian menggantung — kurang apa? Setiap titik harus menyebut hal yang
     // sama dengan pertanyaannya, supaya arah skalanya terbaca dari katanya sendiri.
@@ -84,18 +94,15 @@ export const VACS_ITEMS = [
   },
   {
     id: 'V5', tlx: 'Effort', ek: 'EK2', reversed: false,
-    childText: 'Seberapa keras kamu berusaha tadi?',
+    childText: 'Tadi kamu berusaha keras?',
     emoji: ['😴', '😌', '💪', '😤', '🥵'],
-    anchors: ['Santai saja', 'Sedikit', 'Lumayan', 'Keras', 'Keras sekali'],
+    anchors: ['Tidak', 'Sedikit', 'Lumayan', 'Keras', 'Keras sekali'],
   },
   {
     id: 'V6', tlx: 'Frustration', ek: 'EK1', reversed: false,
-    childText: 'Seberapa kesal kamu tadi?',
+    childText: 'Tadi kamu merasa kesal?',
     emoji: ['😊', '🙂', '😐', '😟', '😤'],
-    // "Biasa" tidak boleh dipakai di sini. Skala ini berjalan dari satu kutub saja
-    // (tidak kesal → sangat kesal), sedangkan "Biasa" adalah titik tengah antara DUA
-    // kutub berlawanan — ia hanya masuk akal pada V2 (santai ↔ buru-buru).
-    anchors: ['Tidak kesal', 'Sedikit', 'Lumayan', 'Kesal', 'Kesal sekali'],
+    anchors: ['Tidak', 'Sedikit', 'Lumayan', 'Kesal', 'Kesal sekali'],
   },
 ];
 
