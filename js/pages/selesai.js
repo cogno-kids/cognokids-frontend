@@ -13,10 +13,7 @@ import { APP } from '../config.js';
 import { Store } from '../store.js';
 import { escapeHtml } from '../util.js';
 import { renderPeneliti } from './peneliti.js';
-
-// Penghalang terhadap anak, bukan terhadap penyerang: kode ini toh dikirim ke peramban.
-// Pengamanan yang sesungguhnya ada di sisi backend (token bersama, lihat M5).
-const PIN = '2026';
+import { getPin } from '../pin.js';
 
 export function renderSelesai(app, { onNewParticipant }) {
   const s = Store.get();
@@ -53,7 +50,7 @@ export function renderSelesai(app, { onNewParticipant }) {
     if (taps >= 5) {
       taps = 0;
       const masuk = prompt('PIN peneliti:');
-      if (masuk === PIN) renderPeneliti(app, { onNewParticipant });
+      if (masuk === getPin()) renderPeneliti(app, { onNewParticipant });
     }
   });
 }

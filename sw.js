@@ -22,6 +22,7 @@ const SHELL = [
   './js/metrics.js',
   './js/export.js',
   './js/archive.js',
+  './js/pin.js',
   './js/pages/login.js',
   './js/pages/vacs.js',
   './js/pages/intro.js',

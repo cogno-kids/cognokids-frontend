@@ -15,6 +15,7 @@ import { Api, getBackendConfig, setBackendConfig } from '../api.js';
 import { Archive } from '../archive.js';
 import { toCsv, withBom } from '../export.js';
 import { escapeHtml } from '../util.js';
+import { setPin, pinMasihBawaan } from '../pin.js';
 
 /** Unduh teks sebagai berkas. BOM UTF-8 agar Excel di Windows membaca huruf beraksen benar. */
 function unduh(namaBerkas, isi) {
@@ -101,6 +102,25 @@ export function renderPeneliti(app, { onNewParticipant }) {
         <button class="btn btn-ghost" id="p-flush" style="margin-top:10px">Coba kirim ulang antrean</button>
       </div>
 
+      ${pinMasihBawaan() ? `
+        <div class="card" style="border:2px solid var(--warn);background:#FFFBEB">
+          <h3>⚠️ PIN masih bawaan</h3>
+          <p class="muted" style="font-size:13px;margin-top:6px">
+            Repo frontend bersifat publik, jadi PIN bawaan diketahui umum. Ganti sekali
+            per perangkat saat penyiapan.
+          </p>
+        </div>` : ''}
+
+      <div class="card">
+        <h3>PIN peneliti perangkat ini</h3>
+        <div class="field" style="margin-top:8px">
+          <label for="b-pin">PIN baru (4–8 angka)</label>
+          <input id="b-pin" type="password" inputmode="numeric" autocomplete="off" placeholder="••••">
+          <div class="err" id="b-pin-err"></div>
+        </div>
+        <button class="btn btn-ghost" id="b-pin-simpan">Ganti PIN</button>
+      </div>
+
       <div class="card">
         <h3>Backend perangkat ini</h3>
         <p class="muted" style="font-size:12.5px;margin:4px 0 10px">
@@ -152,6 +172,15 @@ export function renderPeneliti(app, { onNewParticipant }) {
 
       <button class="btn btn-primary" id="p-baru">Peserta berikutnya</button>
     </div>`;
+
+  app.querySelector('#b-pin-simpan')?.addEventListener('click', (ev) => {
+    const r = setPin(app.querySelector('#b-pin').value);
+    const err = app.querySelector('#b-pin-err');
+    if (!r.ok) { err.textContent = r.error; return; }
+    err.textContent = '';
+    ev.target.textContent = '✅ PIN diganti';
+    app.querySelector('#b-pin').value = '';
+  });
 
   app.querySelector('#b-simpan')?.addEventListener('click', async (ev) => {
     const baseUrl = app.querySelector('#b-url').value;
