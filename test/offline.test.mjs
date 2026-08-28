@@ -118,11 +118,20 @@ describe('Cangkang offline', () => {
     const rekam = JSON.parse(readFileSync(join(root, 'test/shell-hash.json'), 'utf8'));
     const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 
+    // Nomor versi DIBUANG sebelum dihitung. Kalau tidak, menaikkan versi mengubah
+    // config.js dan sw.js — yang keduanya ada di SHELL — sehingga sidik jarinya ikut
+    // berubah dan uji ini tidak akan pernah bisa hijau. Yang ingin dijaga adalah
+    // perubahan ISI, bukan perubahan nomor versi.
     const h = createHash('sha256');
     for (const p of [...SHELL].sort()) {
       if (p === '') continue;
       h.update(p);
-      h.update(readFileSync(join(root, p)));
+      const isi = readFileSync(join(root, p));
+      if (/\.(js|html|css|json|webmanifest)$/.test(p)) {
+        h.update(isi.toString('utf8').replace(/\d+\.\d+\.\d+/g, '<versi>'));
+      } else {
+        h.update(isi);   // biner (ikon) — jangan lewat string, hasilnya berbeda
+      }
     }
     const sekarang = h.digest('hex');
 

@@ -1,5 +1,5 @@
 {
-  "catatan": "Sidik jari isi seluruh berkas SHELL. Bila isi berubah, naikkan versi di package.json, js/config.js, dan sw.js, lalu perbarui berkas ini dengan: node --test test/offline.test.mjs (pesan gagalnya memuat nilai baru).",
+  "catatan": "Sidik jari ISI berkas SHELL, dengan nomor versi diabaikan. Bila uji gagal: naikkan versi di package.json, js/config.js, dan sw.js, lalu salin sha256 dari pesan gagalnya ke sini.",
   "version": "3.2.0",
-  "sha256": "d8683a3f6f9f685d95b65104a69b75ef6c33c40acec878047aecbe6d4bbcb201"
+  "sha256": "4acca8681ef6ecc09aa7859066b3e71ee736587e5fe50ccd76d906b2dbd784ff"
 }
