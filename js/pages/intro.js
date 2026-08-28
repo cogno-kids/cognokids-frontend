@@ -28,8 +28,8 @@ export function renderIntro(app, { game, onStart }) {
       </div>
       <div class="card">
         <p class="muted" style="font-size:14.5px">
-          💙 Santai saja ya. <b>Tidak ada yang benar atau salah.</b><br>
-          Main sebisamu.
+          💙 Santai saja ya.<br>
+          <b>Tidak ada yang benar atau salah.</b>
         </p>
       </div>
       <button class="btn btn-primary" id="i-go">Ayo main! →</button>

@@ -139,7 +139,7 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
         // Menolak diam-diam adalah kegagalan senyap: anak menekan, tidak terjadi apa-apa,
         // dan ia akan mengira aplikasinya rusak lalu menekan lebih keras. Batasnya harus
         // terlihat, bukan sekadar berlaku.
-        countEl.textContent = `Sudah ${c.targets}. Ketuk lagi kalau mau ganti.`;
+        countEl.textContent = `Sudah ${c.targets}. Ketuk gambarnya lagi untuk batal.`;
         countEl.style.color = 'var(--warn)';
         btn.animate(
           [{ transform: 'translateX(0)' }, { transform: 'translateX(-5px)' },

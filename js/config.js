@@ -13,7 +13,7 @@
 
 export const APP = {
   name: 'CognoKids Explorer',
-  version: '3.1.0',
+  version: '3.2.0',
   schema: 3,          // versi skema data; ikut di setiap baris ekspor
   storageKey: 'cognokids_v3',
   queueKey: 'cognokids_queue_v1',
@@ -36,7 +36,15 @@ export const KONDISI = [
 // `tlx` dan `ek` adalah label riset — tidak pernah dirender di layar anak.
 //
 // BENTUK PERTANYAAN. Keenam item memakai satu pola: "Tadi kamu ...?" — kalimat tanya
-// biasa, 4–5 kata, konteks waktu di DEPAN.
+// biasa, konteks waktu di DEPAN.
+//
+// Pendek saja tidak cukup. Kalimat pendek pun membingungkan kalau memuat:
+//   • MODAL — "harus berpikir keras": anak bertanya, harus? disuruh siapa?
+//   • KATA INTROSPEKTIF — "merasa buru-buru": anak bilang "aku buru-buru", titik.
+//   • BINGKAI META — "Menurutmu, ...": menilai diri sendiri dulu, baru menjawab.
+//   • METAFORA — "berpikir keras": berpikir tidak punya kekerasan.
+//   • RAGAM FORMAL — "bergerak" ketika anak memakai "gerak".
+// Semua dibuang. Yang ditanyakan sekarang keadaan konkret yang bisa dirasakan langsung.
 //
 // Bunyi lama memakai pola "Seberapa ... kamu tadi?". Itu keliru untuk anak 8–9 tahun,
 // bukan karena katanya sulit, melainkan karena bentuknya:
@@ -68,25 +76,25 @@ export const KONDISI = [
 export const VACS_ITEMS = [
   {
     id: 'V1', tlx: 'Mental Demand', ek: 'EK2', reversed: false,
-    childText: 'Tadi kamu harus berpikir keras?',
+    childText: 'Tadi kamu banyak berpikir?',
     emoji: ['😴', '🙂', '😐', '😓', '🤯'],
-    anchors: ['Tidak', 'Sedikit', 'Lumayan', 'Keras', 'Keras sekali'],
+    anchors: ['Tidak', 'Sedikit', 'Lumayan', 'Banyak', 'Banyak sekali'],
   },
   {
     id: 'V2', tlx: 'Temporal Demand', ek: 'EK3', reversed: false,
-    childText: 'Tadi kamu merasa buru-buru?',
+    childText: 'Tadi kamu buru-buru?',
     emoji: ['😌', '🙂', '😬', '😰', '😱'],
     anchors: ['Tidak', 'Sedikit', 'Lumayan', 'Buru-buru', 'Buru-buru sekali'],
   },
   {
     id: 'V3', tlx: 'Physical Demand', ek: 'EK4', reversed: false,
-    childText: 'Tadi kamu banyak bergerak?',
+    childText: 'Tadi kamu banyak gerak?',
     emoji: ['🪑', '🤏', '👋', '🤸', '🏃'],
     anchors: ['Tidak', 'Sedikit', 'Lumayan', 'Banyak', 'Banyak sekali'],
   },
   {
     id: 'V4', tlx: 'Performance', ek: 'EK1', reversed: true,
-    childText: 'Menurutmu, tadi mainmu bagus?',
+    childText: 'Tadi kamu main bagus?',
     emoji: ['😔', '😕', '😊', '😄', '🏆'],
     // "Kurang" sendirian menggantung — kurang apa? Setiap titik harus menyebut hal yang
     // sama dengan pertanyaannya, supaya arah skalanya terbaca dari katanya sendiri.
@@ -100,7 +108,7 @@ export const VACS_ITEMS = [
   },
   {
     id: 'V6', tlx: 'Frustration', ek: 'EK1', reversed: false,
-    childText: 'Tadi kamu merasa kesal?',
+    childText: 'Tadi kamu kesal?',
     emoji: ['😊', '🙂', '😐', '😟', '😤'],
     anchors: ['Tidak', 'Sedikit', 'Lumayan', 'Kesal', 'Kesal sekali'],
   },
@@ -134,7 +142,7 @@ export const GAMES = [
   },
   {
     id: 'ft', childName: 'Tangkap Balok', emoji: '🏗️', ek: 'EK3', tlx: 'Temporal Demand',
-    intro: 'Ketuk tempat yang gambarnya sama dengan balok!',
+    intro: 'Ketuk yang sama dengan baloknya!',
     targetScore: 8,
     distractorFromScore: 3,   // distraktor mulai muncul setelah skor ini
   },

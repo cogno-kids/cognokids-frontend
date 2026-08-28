@@ -36,7 +36,7 @@ export function renderVACS(app, { gameName, gameEmoji, onDone }) {
       <div class="topbar">
         <span style="font-size:22px" aria-hidden="true">${gameEmoji}</span>
         <div style="flex:1">
-          <h1>Cerita sedikit, yuk</h1>
+          <h1>Sekarang, tanya sedikit</h1>
           <div class="sub">Setelah bermain ${escapeHtml(gameName)}</div>
         </div>
       </div>
@@ -110,7 +110,7 @@ export function renderVACSTraining(app, { onDone }) {
         <div class="card">
           <h2>Sebentar lagi kamu akan ditanya</h2>
           <p class="muted" style="margin-top:8px">
-            Habis main, kamu akan ditanya tentang <b>perasaanmu</b>.<br>
+            Habis main, kamu akan ditanya.<br>
             Pilih gambar yang paling cocok.<br>
             Tidak ada yang benar atau salah 💙
           </p>

@@ -75,7 +75,7 @@ export function mountMoveMatch(app, { game, onTrial, onFinish }) {
       </div>
       <div class="screen">
         <div class="card center">
-          <h3>Geser kartu ke pasangannya!</h3>
+          <h3>Geser kartu ke kartu yang sama!</h3>
           <div style="display:flex;gap:10px;justify-content:center;margin-top:8px;flex-wrap:wrap">
             <span class="badge badge-blue" id="mv-pasang">✅ ${pairsBabak} dari ${c.pairs} pasang</span>
           </div>

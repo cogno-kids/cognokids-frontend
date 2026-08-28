@@ -114,7 +114,7 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
                          data-i="${i}" aria-label="Angka ${t}${bisaGeser.has(i) ? ', bisa digeser' : ''}">${t}</button>`).join('')}
           </div>
           <div class="pe-target" aria-hidden="true">
-            <p class="muted" style="font-size:11.5px;margin-bottom:4px">Susunan benar</p>
+            <p class="muted" style="font-size:11.5px;margin-bottom:4px">Jadi begini</p>
             <div class="pe-board mini">
               ${[1,2,3,4,5,6,7,8,null].map((t) =>
                 `<div class="pe-tile mini${t === null ? ' kosong' : ''}">${t ?? ''}</div>`).join('')}
