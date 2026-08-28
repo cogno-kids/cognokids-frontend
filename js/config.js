@@ -31,8 +31,28 @@ export const KONDISI = [
 ];
 
 // ── Item VACS ────────────────────────────────────────────────────────────────
-// Teks dan emoji disalin verbatim dari proposal §3 (Tabel 3.6). `tlx` dan `ek` adalah
-// label riset — tidak pernah dirender di layar anak.
+// `tlx` dan `ek` adalah label riset — tidak pernah dirender di layar anak.
+//
+// Bunyi V2, V4, dan V6 BERBEDA dari Tabel 3.6 proposal, dan itu disengaja. Bunyi lama
+// tidak layak untuk anak kelas 3 (usia 8–9):
+//
+//   V2  "Seberapa terburu-buru atau panik kamu tadi?"
+//       Dua hal ditanyakan sekaligus. Anak yang buru-buru tapi tidak panik tidak punya
+//       jawaban yang benar — ia tetap memilih sesuatu, dan pilihan itu masuk ke data
+//       tanpa penanda bahwa itu kompromi. "Panik" juga serapan yang belum tentu dikenal.
+//
+//   V4  "Kamu merasa berhasil atau gagal tadi?"
+//       Pilihan dua kutub yang dipasang di skala lima titik: anak diminta memilih antara
+//       "berhasil" dan "gagal", tetapi harus menjawabnya pada lima tingkat yang titik
+//       tengahnya tidak jelas berarti apa. "Gagal" juga keras untuk anak yang baru saja
+//       diberi tahu tidak ada yang dinilai.
+//
+//   V6  "Apakah kamu merasa stres, kesal, atau tidak nyaman tadi?"
+//       Tiga hal sekaligus, dan "stres" serapan.
+//
+// Yang diukur tidak berubah — dimensi NASA-TLX tiap item tetap sama, arah skalanya tetap
+// sama, dan `reversed` pada V4 tetap benar karena "seberapa bagus" naik searah keberhasilan.
+// Yang berubah hanya jumlah hal yang ditanyakan per item (jadi satu) dan pilihan katanya.
 export const VACS_ITEMS = [
   {
     id: 'V1', tlx: 'Mental Demand', ek: 'EK2', reversed: false,
@@ -42,9 +62,9 @@ export const VACS_ITEMS = [
   },
   {
     id: 'V2', tlx: 'Temporal Demand', ek: 'EK3', reversed: false,
-    childText: 'Seberapa terburu-buru atau panik kamu tadi?',
+    childText: 'Seberapa buru-buru kamu tadi?',
     emoji: ['😌', '🙂', '😬', '😰', '😱'],
-    anchors: ['Santai sekali', 'Santai', 'Biasa', 'Buru-buru', 'Panik'],
+    anchors: ['Santai sekali', 'Santai', 'Biasa', 'Buru-buru', 'Buru-buru sekali'],
   },
   {
     id: 'V3', tlx: 'Physical Demand', ek: 'EK4', reversed: false,
@@ -54,9 +74,9 @@ export const VACS_ITEMS = [
   },
   {
     id: 'V4', tlx: 'Performance', ek: 'EK1', reversed: true,
-    childText: 'Kamu merasa berhasil atau gagal tadi?',
+    childText: 'Seberapa bagus kamu main tadi?',
     emoji: ['😔', '😕', '😊', '😄', '🏆'],
-    anchors: ['Belum berhasil', 'Kurang', 'Lumayan', 'Berhasil', 'Berhasil sekali'],
+    anchors: ['Belum bagus', 'Kurang', 'Lumayan', 'Bagus', 'Bagus sekali'],
   },
   {
     id: 'V5', tlx: 'Effort', ek: 'EK2', reversed: false,
@@ -66,9 +86,9 @@ export const VACS_ITEMS = [
   },
   {
     id: 'V6', tlx: 'Frustration', ek: 'EK1', reversed: false,
-    childText: 'Apakah kamu merasa stres, kesal, atau tidak nyaman tadi?',
+    childText: 'Seberapa kesal kamu tadi?',
     emoji: ['😊', '🙂', '😐', '😟', '😤'],
-    anchors: ['Nyaman sekali', 'Nyaman', 'Biasa', 'Kesal', 'Kesal sekali'],
+    anchors: ['Tidak kesal', 'Sedikit', 'Biasa', 'Kesal', 'Kesal sekali'],
   },
 ];
 

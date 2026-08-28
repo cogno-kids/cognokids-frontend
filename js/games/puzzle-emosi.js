@@ -126,7 +126,7 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <button class="btn pe-hint" id="pe-hint">💡 Bantuan</button>
-          <button class="btn pe-stress" id="pe-stress">😫 Aku stres!</button>
+          <button class="btn pe-stress" id="pe-stress">😫 Aku kesal!</button>
         </div>
       </div>`;
 
