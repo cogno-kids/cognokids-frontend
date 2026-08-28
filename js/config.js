@@ -56,13 +56,13 @@ export const VACS_ITEMS = [
     id: 'V4', tlx: 'Performance', ek: 'EK1', reversed: true,
     childText: 'Kamu merasa berhasil atau gagal tadi?',
     emoji: ['😔', '😕', '😊', '😄', '🏆'],
-    anchors: ['Gagal', 'Kurang', 'Lumayan', 'Berhasil', 'Berhasil sekali'],
+    anchors: ['Belum berhasil', 'Kurang', 'Lumayan', 'Berhasil', 'Berhasil sekali'],
   },
   {
     id: 'V5', tlx: 'Effort', ek: 'EK2', reversed: false,
     childText: 'Seberapa keras kamu berusaha tadi?',
     emoji: ['😴', '😌', '💪', '😤', '🥵'],
-    anchors: ['Tidak berusaha', 'Sedikit', 'Lumayan', 'Keras', 'Keras sekali'],
+    anchors: ['Santai saja', 'Sedikit', 'Lumayan', 'Keras', 'Keras sekali'],
   },
   {
     id: 'V6', tlx: 'Frustration', ek: 'EK1', reversed: false,
@@ -88,20 +88,20 @@ export const DIMENSIONS = [
 export const GAMES = [
   {
     id: 'mm', childName: 'Memory Maze', emoji: '🧩', ek: 'EK2', tlx: 'Mental Demand, Effort',
-    intro: 'Ingat gambar yang muncul, lalu pilih gambar yang tadi kamu lihat!',
+    intro: 'Ingat gambar yang muncul. Nanti kamu pilih lagi gambar itu!',
     // Tabel 3.6: 2 babak, 3 → 4 gambar, waktu mengingat 8 dan 6 detik.
     // v2.1 memakai 5 gambar di babak 2 — menyimpang dari naskah (cacat MM-4).
     rounds: [{ targets: 3, showMs: 8000, options: 6 }, { targets: 4, showMs: 6000, options: 8 }],
   },
   {
     id: 'ft', childName: 'Focus Tower', emoji: '🏗️', ek: 'EK3', tlx: 'Temporal Demand',
-    intro: 'Klik wadah yang bentuk dan warnanya SAMA dengan balok yang jatuh!',
+    intro: 'Ketuk tempat yang gambarnya sama dengan balok!',
     targetScore: 8,
     distractorFromScore: 3,   // distraktor mulai muncul setelah skor ini
   },
   {
     id: 'pe', childName: 'Puzzle Emosi', emoji: '🧸', ek: 'EK1', tlx: 'Frustration, Performance',
-    intro: 'Susun angka 1 sampai 8 berurutan dengan menggeser kotaknya!',
+    intro: 'Geser kotaknya supaya angka 1 sampai 8 jadi urut!',
     // Keputusan D3: 90 detik untuk KEDUA babak (v2.1 memberi 90 lalu 75 — tidak sebanding).
     rounds: 2,
     timerSec: 90,
@@ -109,7 +109,7 @@ export const GAMES = [
   },
   {
     id: 'mv', childName: 'Move & Match', emoji: '🃏', ek: 'EK4', tlx: 'Physical Demand',
-    intro: 'Seret kartu ke pasangannya yang gambarnya sama!',
+    intro: 'Geser kartu ke kartu lain yang gambarnya sama!',
     // Tabel 2.2 mendeklarasikan data objektif "jumlah sentuhan & gerakan layar".
     // v2.1 tak pernah mencatatnya. v3 memakai mekanik SERET agar tuntutan fisiknya nyata
     // dan terukur (touchCount, jarak geser), sesuai nama gamenya sendiri.

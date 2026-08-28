@@ -37,7 +37,7 @@ export function renderLogin(app, { onDone }) {
         </div>
 
         <div class="field">
-          <label for="f-id">Nomor / kode peserta</label>
+          <label for="f-id">Nomor / kode peserta <span style="font-weight:500;color:var(--ink-3)">— diisi pendamping</span></label>
           <input id="f-id" autocomplete="off" inputmode="text" placeholder="Contoh: S1-014">
           <div class="err" id="e-id"></div>
         </div>

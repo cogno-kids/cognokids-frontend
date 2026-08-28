@@ -94,7 +94,7 @@ export function mountFocusTower(app, { game, onTrial, onFinish }) {
       <div class="screen ft-screen">
         <!-- Instruksi berada di alirannya sendiri. Tidak ada overlay yang bisa menimpanya. -->
         <div class="card center ft-instruksi">
-          <h3>Klik wadah yang <b>BENTUKNYA SAMA</b> dengan balok!</h3>
+          <h3>Ketuk tempat yang <b>SAMA</b> dengan balok!</h3>
           <p class="muted" style="margin-top:4px;font-size:13.5px">Cepat ya, baloknya turun terus 👇</p>
         </div>
 
@@ -110,9 +110,9 @@ export function mountFocusTower(app, { game, onTrial, onFinish }) {
               <div class="ft-wadah palsu">${svgBentuk(j.id, j.warna, 34)}</div>`).join('')}
           </div>` : ''}
 
-        <div class="ft-wadah-baris" id="ft-wadah" role="group" aria-label="Pilih wadah yang bentuknya sama">
+        <div class="ft-wadah-baris" id="ft-wadah" role="group" aria-label="Pilih tempat yang sama dengan balok">
           ${wadah.map((j) => `
-            <button type="button" class="ft-wadah" data-id="${j.id}" aria-label="Wadah ${j.nama}">
+            <button type="button" class="ft-wadah" data-id="${j.id}" aria-label="Tempat ${j.nama}">
               ${svgBentuk(j.id, j.warna, 40)}
             </button>`).join('')}
         </div>

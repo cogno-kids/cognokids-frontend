@@ -102,7 +102,7 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
 
       <div class="screen">
         <div class="card center" style="padding:12px">
-          <h3>Susun angka <b style="color:var(--indigo)">1 → 8</b> berurutan!</h3>
+          <h3>Buat angka <b style="color:var(--indigo)">1 sampai 8</b> jadi urut!</h3>
           <p class="muted" style="font-size:13px;margin-top:3px">Geser kotak ke tempat yang kosong</p>
         </div>
 
@@ -114,7 +114,7 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
                          data-i="${i}" aria-label="Angka ${t}${bisaGeser.has(i) ? ', bisa digeser' : ''}">${t}</button>`).join('')}
           </div>
           <div class="pe-target" aria-hidden="true">
-            <p class="muted" style="font-size:11.5px;margin-bottom:4px">Tujuan</p>
+            <p class="muted" style="font-size:11.5px;margin-bottom:4px">Susunan benar</p>
             <div class="pe-board mini">
               ${[1,2,3,4,5,6,7,8,null].map((t) =>
                 `<div class="pe-tile mini${t === null ? ' kosong' : ''}">${t ?? ''}</div>`).join('')}
@@ -165,7 +165,7 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
   function bantuan() {
     if (selesaiBabak) return;
     hints += 1;
-    gambar('💡 Kotak yang bergaris tebal bisa kamu geser');
+    gambar('💡 Kotak yang menyala bisa kamu geser');
     app.querySelectorAll('.pe-tile.bisa').forEach((el) => el.classList.add('sorot'));
     setTimeout(() => app.querySelectorAll('.pe-tile.sorot').forEach((el) => el.classList.remove('sorot')), 1600);
   }

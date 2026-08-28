@@ -45,7 +45,7 @@ export function renderVACS(app, { gameName, gameEmoji, onDone }) {
           <p class="muted" style="font-size:13.5px">Pertanyaan ${q + 1} dari ${VACS_ITEMS.length}</p>
           <h2 style="margin-top:6px;line-height:1.35">${escapeHtml(item.childText)}</h2>
           <p class="muted" style="margin-top:10px;font-size:14.5px">
-            Tidak ada jawaban benar atau salah — pilih yang paling sesuai perasaanmu. 💙
+            Tidak ada jawaban benar atau salah. Pilih yang paling cocok dengan perasaanmu 💙
           </p>
         </div>
 
@@ -107,7 +107,7 @@ export function renderVACSTraining(app, { onDone }) {
         </div>
 
         <div class="card">
-          <span class="badge badge-warn">Contoh — belum dihitung</span>
+          <span class="badge badge-warn">Latihan saja</span>
           <h2 style="margin-top:10px;line-height:1.35">${escapeHtml(contoh.childText)}</h2>
         </div>
 
