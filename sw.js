@@ -13,7 +13,7 @@
 // test/offline.test.mjs sekarang menghitung sidik jari seluruh berkas SHELL dan gagal
 // bila isinya berubah tanpa versi ikut naik, jadi ini tidak bisa terlupa lagi.
 
-const CACHE = 'cognokids-v3.9.0';
+const CACHE = 'cognokids-v3.9.1';
 
 const SHELL = [
   './',

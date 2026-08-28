@@ -129,7 +129,17 @@ body::before {
     linear-gradient(180deg, #DEEEFF 0%, #EDF3FF 46%, #FFF1DC 100%);
 }
 
-#app { min-height: 100%; display: flex; flex-direction: column; }
+/* Tinggi diambil dari VIEWPORT, bukan dari induk.
+   `min-height: 100%` — yang dipakai sampai v3.9.0 — hanya bekerja bila SETIAP leluhurnya
+   punya `height` pasti. Begitu <body> memakai `min-height`, persentasenya tidak lagi
+   punya acuan dan #app menyusut sepanjang isinya saja. Akibatnya `.screen { flex: 1 }`
+   tidak pernah punya ruang lebih untuk dibagi, sehingga `.screen.tengah` tidak
+   menengahkan apa pun dan `.dorong` tidak mendorong tombol ke dasar — keduanya diam-diam
+   tidak bekerja di perangkat sungguhan. Tidak terlihat di pratinjau, karena di sana tiap
+   layar digambar di dalam bingkai setinggi tetap.
+   dvh: di ponsel, 100vh termasuk bilah peramban yang bisa menghilang, sehingga tombol
+   terdorong ke bawah lipatan. */
+#app { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
 
 .screen {
   flex: 1; display: flex; flex-direction: column; gap: 14px;
@@ -407,6 +417,12 @@ input[aria-invalid="true"] { border-color: var(--salah); background: var(--salah
   .vacs-opt { min-height: 106px; padding: 10px 2px; }
   .vacs-emoji { font-size: 30px; min-height: 34px; }
   .vacs-anchor { font-size: 12px; }
+  /* Pada layar sempit, dua tombol berdampingan memuat label 20px menjadi dua baris —
+     "Aku kesal" terpotong jadi "Aku" / "kesal". Tombolnya tetap ≥56px, masih jauh di
+     atas ambang sasaran sentuh. */
+  .btn { font-size: 17px; min-height: 56px; padding: 13px 16px; }
+  h2 { font-size: 24px; }
+  .intro-teks { font-size: 20px; }
 }
 
 /* ── Titik langkah VACS ─────────────────────────────────────────────────── */
@@ -567,9 +583,16 @@ button.ft-wadah:active { transform: translateY(3px); border-color: var(--utama);
    bentuk yang dituju. Sebagai strip mendatar, lebarnya selalu muat dan tujuannya berada
    tepat di atas papan, searah dengan arah baca. */
 .pe-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-.pe-target { order: -1; display: flex; align-items: center; gap: 9px; }
+/* Label DI ATAS papan kecilnya, bukan di sampingnya: berdampingan, lebar striknya
+   ditentukan labelnya (±140px) sedangkan papan kecilnya 76px, sehingga papan kecil itu
+   duduk jauh di kanan sementara papan besar di bawahnya duduk di tengah — dua benda yang
+   seharusnya sejajar tampak meleset. */
+.pe-target { order: -1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
 .pe-target p { margin: 0; }
-.pe-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; width: min(252px, 63vw); }
+/* 68vw, bukan 63vw. Pada 320px — ponsel Android murah yang masih banyak dipakai —
+   63vw memberi petak 62px, di bawah ambang sasaran sentuh yang dipakai di seluruh
+   aplikasi ini. 68vw memberi 68px di sana dan tetap 79px pada 390px. */
+.pe-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; width: min(252px, 68vw); }
 .pe-board.mini { width: 76px; gap: 3px; }
 .pe-tile {
   display: flex; align-items: center; justify-content: center; aspect-ratio: 1;

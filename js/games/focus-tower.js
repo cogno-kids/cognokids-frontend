@@ -100,7 +100,7 @@ export function mountFocusTower(app, { game, onTrial, onFinish }) {
       layar(`
         <div class="card center ft-instruksi">
           <h3>Ketuk bentuk yang <b>SAMA</b> dengan balok!</h3>
-          <p class="muted" style="margin-top:5px">Cepat ya, baloknya turun terus 👇</p>
+          <p class="muted" style="margin-top:5px">Cepat ya, baloknya turun terus!</p>
         </div>
 
         <div class="ft-arena">

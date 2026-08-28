@@ -13,7 +13,7 @@
 
 export const APP = {
   name: 'CognoKids Explorer',
-  version: '3.9.0',
+  version: '3.9.1',
   schema: 3,          // versi skema data; ikut di setiap baris ekspor
   storageKey: 'cognokids_v3',
   queueKey: 'cognokids_queue_v1',
