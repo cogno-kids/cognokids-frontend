@@ -33,7 +33,7 @@ disinkronkan saat ada sinyal.
 
 ```bash
 python3 -m http.server 8080     # buka http://localhost:8080
-npm test                        # 136 uji
+npm test                        # 139 uji
 ```
 
 Tanpa build step, tanpa dependensi. Semua aset ada di repo ini.

@@ -269,6 +269,42 @@ describe('Warna dan keterbacaan — dihitung ulang, bukan diklaim', () => {
   });
 });
 
+describe('Layar kecil — ponsel yang benar-benar dipakai di lapangan', () => {
+  test('tinggi #app diambil dari viewport, bukan dari induknya', () => {
+    // Cacat v3.9.0. `min-height: 100%` hanya bekerja bila SETIAP leluhurnya punya `height`
+    // pasti; begitu <body> memakai `min-height`, persentasenya kehilangan acuan dan #app
+    // menyusut sepanjang isinya. Akibatnya `.screen { flex: 1 }` tidak pernah punya ruang
+    // lebih untuk dibagi, sehingga penengahan isi (`.tengah`) dan pendorongan tombol ke
+    // dasar layar (`.dorong`) diam-diam tidak bekerja sama sekali di perangkat sungguhan.
+    // Tidak terlihat di pratinjau, karena di sana tiap layar digambar di dalam bingkai
+    // setinggi tetap — itulah sebabnya ia perlu dijaga di sini.
+    const blok = css.match(/#app\s*\{([^}]*)\}/);
+    assert.ok(blok, '#app tidak ditemukan');
+    assert.match(blok[1], /min-height:\s*100dvh/, '#app harus memakai 100dvh');
+    assert.doesNotMatch(blok[1], /min-height:\s*100%/,
+      '#app kembali memakai min-height: 100% — .tengah dan .dorong akan berhenti bekerja');
+  });
+
+  test('petak Susun Angka tetap ≥64px pada layar 320px', () => {
+    // 320px adalah lebar Android murah yang masih banyak dipakai. Pada v3.9.0 papannya
+    // 63vw, yang di sana menghasilkan petak 62px — di bawah ambang sasaran sentuh yang
+    // dipakai di seluruh aplikasi ini.
+    const blok = css.match(/\.pe-board\s*\{([^}]*)\}/)[1];
+    const vw = Number(blok.match(/min\([\d.]+px,\s*([\d.]+)vw\)/)[1]);
+    const gap = Number(blok.match(/gap:\s*([\d.]+)px/)[1]);
+    const petak = (320 * vw / 100 - gap * 2) / 3;
+    assert.ok(petak >= 64, `petak ${petak.toFixed(1)}px pada layar 320px — terlalu kecil`);
+  });
+
+  test('sasaran sentuh skala kuesioner tetap besar di layar sempit', () => {
+    const sempit = css.match(/@media \(max-width: 370px\)\s*\{([\s\S]*?)\n\}/)[1];
+    const tinggi = Number(sempit.match(/\.vacs-opt\s*\{[^}]*min-height:\s*([\d.]+)px/)[1]);
+    assert.ok(tinggi >= 64, `tombol skala ${tinggi}px di layar sempit — terlalu kecil`);
+    const tombol = Number(sempit.match(/\.btn\s*\{[^}]*min-height:\s*([\d.]+)px/)[1]);
+    assert.ok(tombol >= 48, `tombol ${tombol}px di layar sempit — terlalu kecil`);
+  });
+});
+
 describe('Font dibundel, bukan dipanggil dari jaringan', () => {
   const sw = readFileSync(join(root, 'sw.js'), 'utf8');
 
