@@ -158,7 +158,11 @@ button.ft-wadah:active { transform: scale(.94); border-color: var(--indigo); }
 /* Palsu SENGAJA tampil berbeda: v2.1 membuatnya identik dengan yang asli, sehingga yang
    terukur adalah "bisakah anak menebak mana yang asli" — tugas diskriminasi, bukan
    ketahanan terhadap gangguan. Di sini ia mencuri perhatian tanpa membuat tugasnya ambigu. */
-.ft-palsu { margin-bottom: 6px; pointer-events: none; }
+/* Bisa diketuk AGAR ketukannya tercatat sebagai ukuran distraksi; ketukan itu tidak
+   berpengaruh apa pun pada permainan. Sebelumnya `pointer-events: none` membuat
+   pendengar klik di focus-tower.js tidak pernah menyala, sehingga kolom
+   distractorClicked selalu false. */
+.ft-palsu { margin-bottom: 6px; cursor: default; }
 .ft-wadah.palsu {
   opacity: .45; border-style: dashed; border-width: 2px; border-top-width: 2px;
   border-radius: var(--r-md); min-height: 56px; background: transparent;

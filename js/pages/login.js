@@ -28,7 +28,7 @@ export function renderLogin(app, { onDone }) {
     <div class="screen">
       <div class="card">
         <h2>Kenalan dulu, yuk!</h2>
-        <p class="muted" style="margin:6px 0 16px">Isi dulu ya, supaya kami tahu ini punya siapa.</p>
+        <p class="muted" style="margin:6px 0 16px">Isi dulu ya, supaya kami tahu siapa yang main.</p>
 
         <div class="field">
           <label for="f-nama">Nama panggilan</label>
@@ -43,13 +43,13 @@ export function renderLogin(app, { onDone }) {
         </div>
 
         <div class="field">
-          <label for="f-sekolah">Sekolah</label>
+          <label for="f-sekolah">Sekolah <span style="font-weight:500;color:var(--ink-3)">— diisi pendamping</span></label>
           <input id="f-sekolah" autocomplete="off" placeholder="Nama sekolah">
           <div class="err" id="e-sekolah"></div>
         </div>
 
         <div class="field">
-          <label for="f-kelas">Kelas</label>
+          <label for="f-kelas">Kelas <span style="font-weight:500;color:var(--ink-3)">— diisi pendamping</span></label>
           <select id="f-kelas">
             <option value="">— pilih kelas —</option>
             ${KELAS.map((k) => `<option value="${k}">Kelas ${k}</option>`).join('')}
@@ -149,7 +149,7 @@ export function renderResume(app, { onResume, onRestart }) {
   const s = Store.get();
   const selesai = Object.keys(s.games).length;
   app.innerHTML = `
-    <div class="topbar"><span style="font-size:22px" aria-hidden="true">🧠</span><h1>Lanjutkan sesi?</h1></div>
+    <div class="topbar"><span style="font-size:22px" aria-hidden="true">🧠</span><h1>Lanjutkan permainan?</h1></div>
     <div class="screen">
       <div class="card center">
         <div style="font-size:46px" aria-hidden="true">👋</div>

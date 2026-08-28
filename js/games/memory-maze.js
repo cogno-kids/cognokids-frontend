@@ -113,7 +113,7 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
       <div class="card center">
         <h3>Mana saja gambar yang tadi?</h3>
         <p class="muted" style="margin-top:6px">
-          Pilih <b>tepat ${c.targets} gambar</b>.
+          Pilih <b>${c.targets} gambar</b>.
           <span id="mm-count" style="color:var(--indigo);font-weight:700">Dipilih 0 dari ${c.targets}</span>
         </p>
       </div>
@@ -135,7 +135,20 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
       if (selected.has(i)) selected.delete(i);
       // INILAH perbaikan P0 3.3: tidak bisa memilih lebih dari jumlah target.
       else if (selected.size < c.targets) selected.add(i);
-      else return;
+      else {
+        // Menolak diam-diam adalah kegagalan senyap: anak menekan, tidak terjadi apa-apa,
+        // dan ia akan mengira aplikasinya rusak lalu menekan lebih keras. Batasnya harus
+        // terlihat, bukan sekadar berlaku.
+        countEl.textContent = `Sudah ${c.targets}. Lepas dulu satu kalau mau ganti.`;
+        countEl.style.color = 'var(--warn)';
+        btn.animate(
+          [{ transform: 'translateX(0)' }, { transform: 'translateX(-5px)' },
+           { transform: 'translateX(5px)' }, { transform: 'translateX(0)' }],
+          { duration: 220 },
+        );
+        return;
+      }
+      countEl.style.color = 'var(--indigo)';
 
       btn.setAttribute('aria-pressed', String(selected.has(i)));
       btn.classList.toggle('selected', selected.has(i));

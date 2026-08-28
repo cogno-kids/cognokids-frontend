@@ -86,7 +86,7 @@ export function mountFocusTower(app, { game, onTrial, onFinish }) {
         <span style="font-size:22px" aria-hidden="true">${game.emoji}</span>
         <div style="flex:1">
           <h1>${escapeHtml(game.childName)}</h1>
-          <div class="sub">Skor ${score} dari ${target}</div>
+          <div class="sub">✅ ${score} dari ${target}</div>
         </div>
       </div>
       <div class="progress"><i style="width:${(score / target) * 100}%"></i></div>
@@ -122,8 +122,13 @@ export function mountFocusTower(app, { game, onTrial, onFinish }) {
       if (btn) jawab(btn.dataset.id, false);
     });
 
-    // Balok palsu tidak bisa diklik (pointer-events:none di CSS), tetapi kalau anak
-    // mencoba menekannya kita tetap mau tahu — dicatat lewat penangkap di arena.
+    // Ketukan pada wadah palsu DICATAT tetapi tidak berpengaruh apa pun pada permainan.
+    // Ini ukuran perilaku langsung untuk distraksi: apakah perhatian anak benar-benar
+    // tertarik ke gangguan itu.
+    //
+    // Sebelumnya CSS memberi `pointer-events: none` pada baris palsu sementara baris ini
+    // memasang pendengar klik — pendengarnya tidak akan pernah menyala, dan kolom
+    // `distractorClicked` selalu bernilai false tanpa ada yang menyadarinya.
     app.querySelector('.ft-palsu')?.addEventListener('click', () => { distraktorAktif = true; });
   }
 
@@ -166,7 +171,7 @@ export function mountFocusTower(app, { game, onTrial, onFinish }) {
   function umpanBalik(benar, miss) {
     const el = document.createElement('div');
     el.className = `ft-fb ${benar ? 'ok' : 'no'}`;
-    el.textContent = benar ? '✅ Tepat!' : miss ? '⏱️ Kelewatan!' : '❌ Bukan itu';
+    el.textContent = benar ? '✅ Tepat!' : miss ? '⏱️ Terlambat!' : '❌ Bukan itu';
     app.querySelector('.ft-screen')?.appendChild(el);
 
     setTimeout(() => (score >= target ? selesai() : nextBlock()), 620);

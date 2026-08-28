@@ -78,7 +78,6 @@ export function mountMoveMatch(app, { game, onTrial, onFinish }) {
           <h3>Geser kartu ke pasangannya!</h3>
           <div style="display:flex;gap:10px;justify-content:center;margin-top:8px;flex-wrap:wrap">
             <span class="badge badge-blue" id="mv-pasang">✅ ${pairsBabak} dari ${c.pairs} pasang</span>
-            <span class="badge badge-warn" id="mv-salah">❌ ${errorsBabak} salah</span>
           </div>
         </div>
         <div class="mv-grid" style="--cols:${c.pairs >= 4 ? 4 : 3}" id="mv-grid">
@@ -95,13 +94,17 @@ export function mountMoveMatch(app, { game, onTrial, onFinish }) {
     pasangSeret();
   }
 
+  // Diperbarui SETIAP percobaan — cacat §4.2, di mana badge tidak pernah berubah selama
+  // babak berjalan sehingga anak tidak tahu usahanya berhasil.
+  //
+  // Pencacah SALAH sengaja TIDAK ditampilkan. Sepanjang sesi anak diberi tahu "tidak ada
+  // yang dinilai"; daftar kesalahan yang terus bertambah di depan matanya mengingkari itu,
+  // dan itu persoalan yang sama dengan pencacah tombol stres v2.1 (§4.4). Jumlah salah
+  // tetap dicatat untuk analisis — hanya tidak diperlihatkan kepada anak.
   function perbaruiBadge() {
     const c = cfg();
     const p = app.querySelector('#mv-pasang');
-    const s = app.querySelector('#mv-salah');
-    // Diperbarui SETIAP percobaan — cacat §4.2.
     if (p) p.textContent = `✅ ${pairsBabak} dari ${c.pairs} pasang`;
-    if (s) s.textContent = `❌ ${errorsBabak} salah`;
   }
 
   // ── Seret ──────────────────────────────────────────────────────────────────
