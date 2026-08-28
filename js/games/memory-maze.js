@@ -16,10 +16,13 @@
 import { shuffle, pickN, escapeHtml } from '../util.js';
 import { scoreMemoryRound } from '../metrics.js';
 
-// Stimulus dibatasi pada emoji Unicode 6.0 (2010) — sudah ada di hampir semua perangkat
-// Android/iOS yang dipakai sekolah. Cacat §7.5 v2.1 memakai emoji lintas-versi yang pada
-// Android lama bisa muncul sebagai kotak kosong, membuat game tak bisa dimainkan.
-// TODO (M3): ganti dengan SVG yang dibundel sendiri agar bentuknya seragam antar-perangkat.
+// ATURAN: hanya emoji Unicode 6.0 (2010) yang boleh dipakai sebagai stimulus MAUPUN
+// sebagai titik skala VACS. Pada Android lama, emoji versi lebih baru muncul sebagai
+// kotak kosong — dan kalau itu terjadi pada skala VACS, anak kehilangan justru bagian
+// yang menggantikan angka.
+//
+// Yang sempat lolos dan sudah diperbaiki: 🤯 (11.0), 🤩 (10.0), 🤚 (9.0), 🤏 (12.0).
+// TODO: ganti dengan SVG yang dibundel sendiri agar bentuknya seragam antar-perangkat.
 const STIMULI = [
   '🐶', '🐱', '🐭', '🐰', '🐻', '🐼', '🐨', '🐯', '🐮', '🐷', '🐸', '🐔',
   '🍎', '🍌', '🍉', '🍇', '🍓', '🍒', '🍍', '🌽', '🍞', '🍕',
@@ -75,7 +78,7 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
     const draw = () => {
       app.innerHTML = shell(`
         <div class="card center">
-          <h3>Ingat gambar ini!</h3>
+          <h3>Ingat gambar-gambar ini!</h3>
           <div style="margin:6px auto 0;max-width:220px">
             <div class="progress" style="margin:0"><i id="mm-bar" style="width:100%"></i></div>
           </div>
@@ -188,7 +191,7 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
         <h3 style="margin-top:6px">
           ${scored.falseAlarms === 0 ? 'Semuanya benar!' : `Kamu dapat ${scored.hits} dari ${scored.nSignal}`}
         </h3>
-        <p class="muted" style="margin-top:6px">Yang bergaris hijau tadi muncul.</p>
+        <p class="muted" style="margin-top:6px">Yang hijau ini tadi muncul.</p>
       </div>
       <div class="emoji-grid" style="--cols:4">
         ${round.options.map((e, i) => {

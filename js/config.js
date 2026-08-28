@@ -13,7 +13,7 @@
 
 export const APP = {
   name: 'CognoKids Explorer',
-  version: '3.4.0',
+  version: '3.6.0',
   schema: 3,          // versi skema data; ikut di setiap baris ekspor
   storageKey: 'cognokids_v3',
   queueKey: 'cognokids_queue_v1',
@@ -77,39 +77,37 @@ export const VACS_ITEMS = [
   {
     id: 'V1', tlx: 'Mental Demand', ek: 'EK2', reversed: false,
     childText: 'Tadi kamu banyak berpikir?',
-    emoji: ['😴', '🙂', '😐', '😓', '🤯'],
+    emoji: ['😴', '🙂', '😐', '😓', '😵'],
     anchors: ['Tidak', 'Sedikit', 'Lumayan', 'Banyak', 'Banyak sekali'],
   },
   {
     id: 'V2', tlx: 'Temporal Demand', ek: 'EK3', reversed: false,
     childText: 'Tadi kamu buru-buru?',
-    emoji: ['😌', '🙂', '😬', '😰', '😱'],
+    emoji: ['😌', '🙂', '😐', '😬', '😰'],
     anchors: ['Tidak', 'Sedikit', 'Lumayan', 'Buru-buru', 'Buru-buru sekali'],
   },
   {
     id: 'V3', tlx: 'Physical Demand', ek: 'EK4', reversed: false,
     childText: 'Tadi kamu banyak gerak?',
-    emoji: ['🪑', '🤏', '👋', '🤸', '🏃'],
+    emoji: ['✋', '👆', '👏', '👋', '🙌'],
     anchors: ['Tidak', 'Sedikit', 'Lumayan', 'Banyak', 'Banyak sekali'],
   },
   {
     id: 'V4', tlx: 'Performance', ek: 'EK1', reversed: true,
     childText: 'Tadi kamu main bagus?',
-    emoji: ['😔', '😕', '😊', '😄', '🏆'],
-    // "Kurang" sendirian menggantung — kurang apa? Setiap titik harus menyebut hal yang
-    // sama dengan pertanyaannya, supaya arah skalanya terbaca dari katanya sendiri.
-    anchors: ['Belum bagus', 'Kurang bagus', 'Lumayan', 'Bagus', 'Bagus sekali'],
+    emoji: ['👎', '😔', '😐', '😄', '🌟'],
+    anchors: ['Tidak', 'Sedikit', 'Lumayan', 'Bagus', 'Bagus sekali'],
   },
   {
     id: 'V5', tlx: 'Effort', ek: 'EK2', reversed: false,
     childText: 'Tadi kamu berusaha keras?',
-    emoji: ['😴', '😌', '💪', '😤', '🥵'],
+    emoji: ['😌', '🙂', '😐', '💪', '😤'],
     anchors: ['Tidak', 'Sedikit', 'Lumayan', 'Keras', 'Keras sekali'],
   },
   {
     id: 'V6', tlx: 'Frustration', ek: 'EK1', reversed: false,
     childText: 'Tadi kamu kesal?',
-    emoji: ['😊', '🙂', '😐', '😟', '😤'],
+    emoji: ['😊', '🙂', '😕', '😟', '😠'],
     anchors: ['Tidak', 'Sedikit', 'Lumayan', 'Kesal', 'Kesal sekali'],
   },
 ];
@@ -135,13 +133,13 @@ export const DIMENSIONS = [
 export const GAMES = [
   {
     id: 'mm', childName: 'Ingat Gambar', emoji: '🧩', ek: 'EK2', tlx: 'Mental Demand, Effort',
-    intro: 'Ingat gambarnya. Nanti kamu pilih lagi!',
+    intro: 'Ingat gambarnya. Nanti kamu cari di antara gambar lain!',
     // Tabel 3.6: 2 babak, 3 → 4 gambar, waktu mengingat 8 dan 6 detik.
     // v2.1 memakai 5 gambar di babak 2 — menyimpang dari naskah (cacat MM-4).
     rounds: [{ targets: 3, showMs: 8000, options: 6 }, { targets: 4, showMs: 6000, options: 8 }],
   },
   {
-    id: 'ft', childName: 'Tangkap Balok', emoji: '🏗️', ek: 'EK3', tlx: 'Temporal Demand',
+    id: 'ft', childName: 'Cocokkan Bentuk', emoji: '🏗️', ek: 'EK3', tlx: 'Temporal Demand',
     intro: 'Ketuk bentuk yang sama dengan balok!',
     targetScore: 8,
     distractorFromScore: 3,   // distraktor mulai muncul setelah skor ini

@@ -1,5 +1,5 @@
 {
   "catatan": "Sidik jari ISI berkas SHELL, dengan nomor versi diabaikan. Bila uji gagal: naikkan versi di package.json, js/config.js, dan sw.js, lalu salin sha256 dari pesan gagalnya ke sini.",
-  "version": "3.4.0",
-  "sha256": "5021f6765bdc0bfdc80a4624a930f77617d6e98d25358223e59e59f351d40584"
+  "version": "3.6.0",
+  "sha256": "cc5a0979858a35fbb809b3d1a2afbc6ac4ac542a5f2ee2dfcceb83ba887c3e98"
 }
