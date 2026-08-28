@@ -159,7 +159,7 @@ export function renderResume(app, { onResume, onRestart }) {
           Kamu sudah main <b>${selesai} dari ${s.gameOrder.length}</b> permainan.
         </p>
         <div style="margin-top:16px;display:grid;gap:10px">
-          <button class="btn btn-primary" id="r-lanjut">Lanjutkan dari tadi</button>
+          <button class="btn btn-primary" id="r-lanjut">Lanjutkan permainannya</button>
           <button class="btn btn-ghost" id="r-ulang">Mulai peserta baru</button>
         </div>
       </div>

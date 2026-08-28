@@ -35,7 +35,7 @@ export function renderSelesai(app, { onNewParticipant }) {
         </p>
       </div>
       <div class="card center">
-        <p class="muted" style="font-size:14.5px">Sekarang kembalikan ke Bapak/Ibu ya.</p>
+        <p class="muted" style="font-size:14.5px">Sudah selesai. Panggil Bapak/Ibu ya.</p>
       </div>
       <div class="center" style="padding-top:4px">
         <span class="muted" style="font-size:11px;opacity:.55">v${APP.version}</span>

@@ -102,7 +102,7 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
 
       <div class="screen">
         <div class="card center" style="padding:12px">
-          <h3>Buat angka <b style="color:var(--indigo)">1 sampai 8</b> jadi urut!</h3>
+          <h3>Urutkan angka <b style="color:var(--indigo)">1 sampai 8</b>!</h3>
           <p class="muted" style="font-size:13px;margin-top:3px">Geser kotak ke tempat yang kosong</p>
         </div>
 
@@ -158,7 +158,7 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
     trials.push(trial);
     onTrial?.(trial);
 
-    if (isSolved(tiles)) { solvedCount += 1; return akhirBabak('🎉 Hebat! Tersusun semua!'); }
+    if (isSolved(tiles)) { solvedCount += 1; return akhirBabak('🎉 Hebat! Angkanya sudah urut!'); }
     gambar();
   }
 
@@ -176,7 +176,7 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
     // Jeda minimum: tanpa ini, 15 penekanan beruntun tercatat semua (§4.4).
     if (now - stressTerakhir < game.stressCooldownMs) {
       const fb = app.querySelector('#pe-fb');
-      if (fb) fb.textContent = '💙 Tarik napas dulu ya, pelan-pelan…';
+      if (fb) fb.textContent = '💙 Tarik napas dulu ya.';
       return;
     }
     stressTerakhir = now;

@@ -13,7 +13,7 @@
 
 export const APP = {
   name: 'CognoKids Explorer',
-  version: '3.2.0',
+  version: '3.4.0',
   schema: 3,          // versi skema data; ikut di setiap baris ekspor
   storageKey: 'cognokids_v3',
   queueKey: 'cognokids_queue_v1',
@@ -135,20 +135,20 @@ export const DIMENSIONS = [
 export const GAMES = [
   {
     id: 'mm', childName: 'Ingat Gambar', emoji: '🧩', ek: 'EK2', tlx: 'Mental Demand, Effort',
-    intro: 'Ingat gambarnya. Nanti kamu cari lagi!',
+    intro: 'Ingat gambarnya. Nanti kamu pilih lagi!',
     // Tabel 3.6: 2 babak, 3 → 4 gambar, waktu mengingat 8 dan 6 detik.
     // v2.1 memakai 5 gambar di babak 2 — menyimpang dari naskah (cacat MM-4).
     rounds: [{ targets: 3, showMs: 8000, options: 6 }, { targets: 4, showMs: 6000, options: 8 }],
   },
   {
     id: 'ft', childName: 'Tangkap Balok', emoji: '🏗️', ek: 'EK3', tlx: 'Temporal Demand',
-    intro: 'Ketuk yang sama dengan baloknya!',
+    intro: 'Ketuk bentuk yang sama dengan balok!',
     targetScore: 8,
     distractorFromScore: 3,   // distraktor mulai muncul setelah skor ini
   },
   {
     id: 'pe', childName: 'Susun Angka', emoji: '🧸', ek: 'EK1', tlx: 'Frustration, Performance',
-    intro: 'Geser kotaknya. Buat angka 1 sampai 8 urut!',
+    intro: 'Geser kotaknya. Urutkan angka 1 sampai 8!',
     // Keputusan D3: 90 detik untuk KEDUA babak (v2.1 memberi 90 lalu 75 — tidak sebanding).
     rounds: 2,
     timerSec: 90,

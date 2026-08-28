@@ -59,7 +59,7 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
         <h2 style="margin-top:8px">Babak ${ri + 1} dari ${game.rounds.length}</h2>
         <p class="muted" style="margin-top:10px">
           Akan muncul <b>${c.targets} gambar</b>.<br>
-          Ingat baik-baik ya, cuma <b>${Math.round(c.showMs / 1000)} detik</b>!
+          Gambarnya cuma muncul <b>${Math.round(c.showMs / 1000)} detik</b>!
         </p>
       </div>
       <button class="btn btn-primary" id="mm-go">Aku siap! →</button>`);
@@ -111,10 +111,9 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
 
     app.innerHTML = shell(`
       <div class="card center">
-        <h3>Mana saja gambar yang tadi?</h3>
+        <h3>Pilih gambar yang tadi kamu ingat!</h3>
         <p class="muted" style="margin-top:6px">
-          Pilih <b>${c.targets} gambar</b>.
-          <span id="mm-count" style="color:var(--indigo);font-weight:700">Dipilih 0 dari ${c.targets}</span>
+          <span id="mm-count" style="color:var(--indigo);font-weight:700">Dipilih 0 dari ${c.targets} gambar</span>
         </p>
       </div>
       <div class="emoji-grid" style="--cols:4" id="mm-opts" role="group" aria-label="Pilih gambar yang tadi muncul">
@@ -139,7 +138,7 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
         // Menolak diam-diam adalah kegagalan senyap: anak menekan, tidak terjadi apa-apa,
         // dan ia akan mengira aplikasinya rusak lalu menekan lebih keras. Batasnya harus
         // terlihat, bukan sekadar berlaku.
-        countEl.textContent = `Sudah ${c.targets}. Ketuk gambarnya lagi untuk batal.`;
+        countEl.textContent = `Sudah ${c.targets}. Mau ganti? Ketuk lagi gambarnya.`;
         countEl.style.color = 'var(--warn)';
         btn.animate(
           [{ transform: 'translateX(0)' }, { transform: 'translateX(-5px)' },
@@ -152,7 +151,7 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
 
       btn.setAttribute('aria-pressed', String(selected.has(i)));
       btn.classList.toggle('selected', selected.has(i));
-      countEl.textContent = `Dipilih ${selected.size} dari ${c.targets}`;
+      countEl.textContent = `Dipilih ${selected.size} dari ${c.targets} gambar`;
 
       const ready = selected.size === c.targets;
       doneBtn.disabled = !ready;
@@ -189,7 +188,7 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
         <h3 style="margin-top:6px">
           ${scored.falseAlarms === 0 ? 'Semuanya benar!' : `Kamu dapat ${scored.hits} dari ${scored.nSignal}`}
         </h3>
-        <p class="muted" style="margin-top:6px">Yang hijau tadi muncul.</p>
+        <p class="muted" style="margin-top:6px">Yang bergaris hijau tadi muncul.</p>
       </div>
       <div class="emoji-grid" style="--cols:4">
         ${round.options.map((e, i) => {
