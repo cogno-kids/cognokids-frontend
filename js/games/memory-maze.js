@@ -58,8 +58,8 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
         <div style="font-size:52px" aria-hidden="true">${game.emoji}</div>
         <h2 style="margin-top:8px">Babak ${ri + 1} dari ${game.rounds.length}</h2>
         <p class="muted" style="margin-top:10px">
-          Akan muncul <b>${c.targets} gambar</b>. Ingat baik-baik ya —
-          gambarnya cuma tampil <b>${Math.round(c.showMs / 1000)} detik</b>!
+          Akan muncul <b>${c.targets} gambar</b>.<br>
+          Ingat baik-baik ya, cuma <b>${Math.round(c.showMs / 1000)} detik</b>!
         </p>
       </div>
       <button class="btn btn-primary" id="mm-go">Aku siap! →</button>`);
@@ -139,7 +139,7 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
         // Menolak diam-diam adalah kegagalan senyap: anak menekan, tidak terjadi apa-apa,
         // dan ia akan mengira aplikasinya rusak lalu menekan lebih keras. Batasnya harus
         // terlihat, bukan sekadar berlaku.
-        countEl.textContent = `Sudah ${c.targets}. Lepas dulu satu kalau mau ganti.`;
+        countEl.textContent = `Sudah ${c.targets}. Ketuk lagi kalau mau ganti.`;
         countEl.style.color = 'var(--warn)';
         btn.animate(
           [{ transform: 'translateX(0)' }, { transform: 'translateX(-5px)' },
@@ -187,9 +187,9 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
       <div class="card center">
         <div style="font-size:44px" aria-hidden="true">${scored.falseAlarms === 0 ? '🎉' : '💪'}</div>
         <h3 style="margin-top:6px">
-          ${scored.falseAlarms === 0 ? 'Semuanya benar!' : `Kamu menemukan ${scored.hits} dari ${scored.nSignal}`}
+          ${scored.falseAlarms === 0 ? 'Semuanya benar!' : `Kamu dapat ${scored.hits} dari ${scored.nSignal}`}
         </h3>
-        <p class="muted" style="margin-top:6px">Yang hijau adalah gambar yang tadi muncul.</p>
+        <p class="muted" style="margin-top:6px">Yang hijau tadi muncul.</p>
       </div>
       <div class="emoji-grid" style="--cols:4">
         ${round.options.map((e, i) => {

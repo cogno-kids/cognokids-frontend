@@ -28,7 +28,7 @@ export function renderLogin(app, { onDone }) {
     <div class="screen">
       <div class="card">
         <h2>Kenalan dulu, yuk!</h2>
-        <p class="muted" style="margin:6px 0 16px">Isi dulu ya, supaya kami tahu siapa yang main.</p>
+        <p class="muted" style="margin:6px 0 16px">Isi dulu ya, biar kami kenal kamu.</p>
 
         <div class="field">
           <label for="f-nama">Nama panggilan</label>
@@ -58,7 +58,7 @@ export function renderLogin(app, { onDone }) {
         </div>
 
         <div class="field">
-          <span class="label" id="l-gender" style="display:block;font-size:14px;font-weight:600;margin-bottom:6px">Jenis kelamin</span>
+          <span class="label" id="l-gender" style="display:block;font-size:14px;font-weight:600;margin-bottom:6px">Kamu laki-laki atau perempuan?</span>
           <div class="choice cols-2" role="group" aria-labelledby="l-gender" id="g-gender">
             ${GENDER.map((g) => `
               <button type="button" data-val="${g.id}" aria-pressed="false">
@@ -72,7 +72,7 @@ export function renderLogin(app, { onDone }) {
 
       <div class="card">
         <span class="label" id="l-kondisi" style="display:block;font-size:14px;font-weight:600;margin-bottom:2px">Waktu pengukuran</span>
-        <p class="muted" style="font-size:13.5px;margin-bottom:10px">Diisi pendamping — dipakai untuk mencocokkan dengan pengukuran lingkungan kelas.</p>
+        <p class="muted" style="font-size:13.5px;margin-bottom:10px">Diisi pendamping. Dipakai untuk mencocokkan dengan data lingkungan kelas.</p>
         <div class="choice cols-3" role="group" aria-labelledby="l-kondisi" id="g-kondisi">
           ${KONDISI.map((k) => `
             <button type="button" data-val="${k.id}" aria-pressed="false">
@@ -155,8 +155,8 @@ export function renderResume(app, { onResume, onRestart }) {
         <div style="font-size:46px" aria-hidden="true">👋</div>
         <h2 style="margin-top:8px">Halo lagi, ${escapeHtml(s.participant?.nama ?? '')}!</h2>
         <p class="muted" style="margin-top:8px">
-          Permainanmu tadi belum selesai. Kamu sudah menyelesaikan
-          <b>${selesai} dari ${s.gameOrder.length}</b> permainan.
+          Permainanmu tadi belum selesai.<br>
+          Kamu sudah main <b>${selesai} dari ${s.gameOrder.length}</b> permainan.
         </p>
         <div style="margin-top:16px;display:grid;gap:10px">
           <button class="btn btn-primary" id="r-lanjut">Lanjutkan dari tadi</button>

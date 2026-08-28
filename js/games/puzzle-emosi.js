@@ -183,11 +183,11 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
     stressTimesMs.push(now - sesiMulai);
     // Pencacahnya TIDAK ditampilkan kembali kepada anak.
     const fb = app.querySelector('#pe-fb');
-    if (fb) fb.textContent = '😌 Tenang ya! Istirahat sebentar, coba lagi pelan-pelan 💙';
+    if (fb) fb.textContent = '😌 Tenang ya. Coba lagi pelan-pelan 💙';
   }
 
   function habisWaktu() {
-    akhirBabak('⏰ Waktu habis! Tidak apa-apa, kamu sudah berusaha keras!');
+    akhirBabak('⏰ Waktu habis! Tidak apa-apa, kamu hebat!');
   }
 
   function akhirBabak(pesan) {

@@ -88,7 +88,7 @@ export function mountMoveMatch(app, { game, onTrial, onFinish }) {
                  aria-label="Kartu ${k.emoji}${matched.has(k.id) ? ', sudah berpasangan' : ''}"
                  >${k.emoji}</div>`).join('')}
         </div>
-        <p class="muted center" style="font-size:13.5px">Tekan kartunya, lalu geser ke kartu yang sama 👆</p>
+        <p class="muted center" style="font-size:13.5px">Tekan kartunya, geser ke kartu yang sama 👆</p>
       </div>`;
 
     pasangSeret();

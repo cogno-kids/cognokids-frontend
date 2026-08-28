@@ -27,11 +27,11 @@ export function renderSelesai(app, { onNewParticipant }) {
         <div style="font-size:70px;cursor:default" id="s-logo" aria-hidden="true">🌟</div>
         <h2 style="margin-top:10px">Terima kasih, ${escapeHtml(s.participant?.nama ?? '')}!</h2>
         <p class="muted" style="margin-top:12px;font-size:16px">
-          Kamu sudah menyelesaikan semua permainan. Hebat!
+          Kamu sudah main semuanya. Hebat!
         </p>
         <p class="muted" style="margin-top:10px">
-          Ingat ya — tadi <b>bukan ujian</b>. Tidak ada yang benar, tidak ada yang salah.
-          Kamu sudah sangat membantu. 💙
+          Ingat ya, tadi <b>bukan ujian</b>.<br>
+          Kamu sudah sangat membantu 💙
         </p>
       </div>
       <div class="card center">
