@@ -1,0 +1,11 @@
+{
+  "name": "cognokids-frontend",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Alat ukur ergonomi kognitif berbasis permainan untuk siswa sekolah dasar.",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "serve": "python3 -m http.server 8080"
+  }
+}
