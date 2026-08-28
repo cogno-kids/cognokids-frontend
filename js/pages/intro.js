@@ -23,8 +23,7 @@ export function renderIntro(app, { game, onStart }) {
     <div class="screen">
       <div class="card center">
         <div style="font-size:64px" aria-hidden="true">${game.emoji}</div>
-        <h2 style="margin-top:10px">${escapeHtml(game.childName)}</h2>
-        <p class="muted" style="margin-top:12px;font-size:16px">${escapeHtml(game.intro)}</p>
+        <p style="margin-top:14px;font-size:17px;color:var(--ink-2);font-weight:600">${escapeHtml(game.intro)}</p>
       </div>
       <div class="card">
         <p class="muted" style="font-size:14.5px">

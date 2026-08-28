@@ -124,7 +124,7 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
           <button type="button" class="emoji-card pick" data-i="${i}" aria-pressed="false"
                   >${e}</button>`).join('')}
       </div>
-      <button class="btn btn-primary" id="mm-done" disabled style="opacity:.5">Selesai</button>`);
+      <button class="btn btn-primary" id="mm-done" disabled style="opacity:.5">Pilih ${c.targets} gambar dulu</button>`);
 
     const doneBtn = app.querySelector('#mm-done');
     const countEl = app.querySelector('#mm-count');
@@ -159,6 +159,7 @@ export function mountMemoryMaze(app, { game, onTrial, onFinish }) {
       const ready = selected.size === c.targets;
       doneBtn.disabled = !ready;
       doneBtn.style.opacity = ready ? '1' : '.5';
+      doneBtn.textContent = ready ? 'Sudah, lanjut →' : `Pilih ${c.targets} gambar dulu`;
     });
 
     doneBtn.addEventListener('click', submit);

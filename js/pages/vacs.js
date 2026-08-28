@@ -110,15 +110,17 @@ export function renderVACSTraining(app, { onDone }) {
         <div class="card">
           <h2>Nanti kami tanya sedikit</h2>
           <p class="muted" style="margin-top:8px">
-            Habis main, kami akan tanya sedikit.<br>
-            Kamu tinggal pilih gambar yang paling cocok.<br>
+            Setiap habis main, kamu tinggal pilih gambar yang paling cocok.<br>
             Tidak ada yang benar atau salah 💙
           </p>
         </div>
 
         <div class="card">
           <span class="badge badge-warn">Latihan saja</span>
-          <h2 style="margin-top:10px;line-height:1.35">${escapeHtml(contoh.childText)}</h2>
+          <p class="muted" style="margin-top:8px;font-size:14px">
+            Coba dulu ya. Anggap saja kamu baru selesai main.
+          </p>
+          <h2 style="margin-top:6px;line-height:1.35">${escapeHtml(contoh.childText)}</h2>
         </div>
 
         <div class="vacs-opts" role="radiogroup" aria-label="${escapeHtml(contoh.childText)}">

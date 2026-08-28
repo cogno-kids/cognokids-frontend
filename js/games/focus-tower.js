@@ -91,7 +91,7 @@ export function mountFocusTower(app, { game, onTrial, onFinish }) {
         <span style="font-size:22px" aria-hidden="true">${game.emoji}</span>
         <div style="flex:1">
           <h1>${escapeHtml(game.childName)}</h1>
-          <div class="sub">✅ ${score} dari ${target}</div>
+          <div class="sub">Benar ${score} dari ${target}</div>
         </div>
       </div>
       <div class="progress"><i style="width:${(score / target) * 100}%"></i></div>

@@ -79,7 +79,7 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
       bar.style.background = pct < 25 ? 'var(--bad)' : pct < 50 ? 'var(--warn)' : 'var(--ok)';
     }
     if (num) {
-      num.textContent = `${tLeft}s`;
+      num.textContent = `⏱ ${tLeft}`;
       // Latar berubah mengikuti sisa waktu — TEKS TETAP PUTIH. Inilah cacat PE-C:
       // v2.1 menyetel keduanya dari ekspresi yang sama, sehingga angkanya lenyap.
       num.style.background = pct < 25 ? 'var(--bad)' : pct < 50 ? 'var(--warn)' : 'var(--ok)';
@@ -96,7 +96,7 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
           <h1>${escapeHtml(game.childName)}</h1>
           <div class="sub">Babak ${ri + 1} dari ${game.rounds}</div>
         </div>
-        <span class="pe-num" id="pe-num">${tLeft}s</span>
+        <span class="pe-num" id="pe-num">⏱ ${tLeft}</span>
       </div>
       <div class="progress"><i id="pe-bar" style="width:100%;background:var(--ok)"></i></div>
 
@@ -114,7 +114,7 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
                          data-i="${i}" aria-label="Angka ${t}${bisaGeser.has(i) ? ', bisa digeser' : ''}">${t}</button>`).join('')}
           </div>
           <div class="pe-target" aria-hidden="true">
-            <p class="muted" style="font-size:11.5px;margin-bottom:4px">Contohnya</p>
+            <p class="muted" style="font-size:11.5px;margin-bottom:4px">Harus jadi begini</p>
             <div class="pe-board mini">
               ${[1,2,3,4,5,6,7,8,null].map((t) =>
                 `<div class="pe-tile mini${t === null ? ' kosong' : ''}">${t ?? ''}</div>`).join('')}
@@ -126,8 +126,11 @@ export function mountPuzzleEmosi(app, { game, onTrial, onFinish }) {
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <button class="btn pe-hint" id="pe-hint">💡 Bantuan</button>
-          <button class="btn pe-stress" id="pe-stress">😫 Aku kesal!</button>
+          <button class="btn pe-stress" id="pe-stress">😫 Aku kesal</button>
         </div>
+        <p class="muted center" style="font-size:12.5px;margin-top:6px">
+          Tekan 💡 kalau bingung. Tekan 😫 kalau kesal — permainannya tetap jalan.
+        </p>
       </div>`;
 
     perbaruiTimer();
